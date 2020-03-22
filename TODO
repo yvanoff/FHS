@@ -1,0 +1,21 @@
+Finir le GUI (revoir pour faire un seul match)
+Un outil qui scan les équipes et permet de les sélectionner pour les coller ailleurs
+Un outil qui chaine les coupes pour pas avoir à se faire chier avec tous les tours préliminaires
+Un outil qui génère/met à jour des équipes automatiquement (attention à la formation utilisée ! La faire évoluer)
+Un outil qui fait des transferts automatiquement
+Séparer make_cup en make_knockout et make_group_stage (avec possibilité chainer, cf plus haut).
+Ces deux méthodes renvoient la liste des qualifiés sous le format [qualifiés] si pas de chapeaux ou [[chapeau1],[chapeau2],...]
+Minuscules (plus de 8EMES, QUARTS, DEMIS) + possibilité de fournir son propre nom pour le tour sépecial (ou lieu de TOUR SEPCIAL)
+Matchs pour la 3ème place
+
+
+Bugs:
+
+Flags comptent pas (tour préliminaire, coupe_nat = False, flag_exist = True: DML v DML) (peut-être lié aux chapeaux: une équipe était chapeau 0, l'autre chapeau 1)
+idem lors 8èmes saison 1: USDPJA (KER, chapeau 1) joue OdC (KER, chapeau 2), ou AZC (RSS, chapeau 2) joue TAD (RSS, chapeau 1)
+Configuration rend possible les boucles infinies (est arrivé une fois lors du tirage au sort des 8èmes s1)
+
+Bugs réglés:
+
+Probleme: les chapeaux 1 reçoivent à l'aller => pas un bug, BIEN METTRE [1,0] COMME CHAPEAUX !!! (en fait pour le programme le chapeau en position 0 est le plus gros, quel que soit le nombre)
+Matchs doms/ext scheduler (cf Sandwich United - 8 matchs à l'extérieur sur 9 dans la phase aller) => Réglé (normalement)
