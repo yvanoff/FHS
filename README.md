@@ -1,2 +1,2 @@
 # FHS
-Football History Simulator
+Football History Simulator v1.0
