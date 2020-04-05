@@ -11,7 +11,7 @@ from season_tools import simuler_saison, make_classement, make_buteurs
 import os
 
 def make_championnat(nom_saison = '', resultat_saison = '', m_retours = True,
-                     criterias = ['diff', 'bp', 'conf'],
+                     criterias = ['diff', 'bp', 'conf'], pts = [3,1,0],
                      additional_arguments = {}):
     
     
@@ -24,7 +24,7 @@ def make_championnat(nom_saison = '', resultat_saison = '', m_retours = True,
     liste_matches = create_schedule(liste_equipe, retour = m_retours)
     
     simuler_saison(liste_matches, liste_equipe, data_equipe, stats_saison,
-                   pts_v = 3, pts_n = 1, pts_d = 0,
+                   pts_v = pts[0], pts_n = pts[1], pts_d = pts[2],
                    additional_arguments=additional_arguments,
                    tiebreakers = criterias)
     

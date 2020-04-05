@@ -24,10 +24,15 @@ def lecture_data(chemin, championnat = False, flags = False, chapeaux = []):
             for l in scan_result:
                 list_equipe_raw.append(l)
                 chapeaux_raw.append(c)
+        if os.path.isdir(chemin+'chapeau_0\\') & (not(0 in chapeaux)):
+            scan_result = os.scandir(chemin+'chapeau_0\\')
+            for l in scan_result:
+                list_equipe_raw.append(l)
+                chapeaux_raw.append(0)
                 
     for l in list_equipe_raw:
         nom_raw = l.name.split('.')[0]
-        if l.name.split('.')[-1] == "data":
+        if l.name.split('.')[-1].lower() == "data":
             liste_equipe.append(nom_raw)
             if chapeaux == []:
                 meta_data_file = open(chemin+l.name,'r')

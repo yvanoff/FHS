@@ -176,15 +176,15 @@ def tirage_sort(liste_equipe, stats_equipes, equipes_ens = 2,
         liste_tirage = deepcopy(liste_equipe)
         for i in range(nb_couples):
             couple_added = []
+            banned_flags = []
             for j in range(equipes_ens):
                 liste_flags_eq = []
                 liste_chapeaux_eq = []
-                banned_flags = []
                 for k in liste_tirage:
                     liste_flags_eq.append(stats_equipes['flag_'+k])
                     liste_chapeaux_eq.append(stats_equipes['chapeau_'+k])
                 bon_tirage = False
-                selected_chapeau = 0
+                selected_chapeau = (len(liste_chapeaux)>0)-1
                 if (len(liste_chapeaux)-j > 0):
                     selected_chapeau = liste_chapeaux[j]
                     if not (selected_chapeau in liste_chapeaux_eq):
@@ -210,41 +210,40 @@ def tirage_sort(liste_equipe, stats_equipes, equipes_ens = 2,
                     banned_flags.append(flag_choisi)
                 couple_added.append(eq_choisie)
                 liste_tirage.remove(eq_choisie)
-            if (flags_exist and is_coupe_nat and (equipes_ens == 2) and 
+            if (flags_exist and is_coupe_nat and (equipes_ens == 2) and
                     (int(stats_equipes['flag_'+couple_added[0]]) <
                     int(stats_equipes['flag_'+couple_added[1]]))
                     and liste_chapeaux == []):
                 couple_added = [couple_added[1], couple_added[0]]
             liste_res.append(couple_added)
-        if (equipes_ens > 2) | (liste_chapeaux == []) | (groupes == {}):
+        if groupes == {}:
             ok_group = True
         else:
             ok_group = True
             for m in liste_res:
-                if groupes[m[0]] == groupes[m[1]]:
-                    ok_group = False
+                for e in m:
+                    for f in m:
+                        if (groupes[e] == groupes[f]) & (e != f):
+                            ok_group = False
     return liste_res
             
 
             
 def trouver_flags_importants(liste_flags, nb_matchups_restants,
                              liste_chapeaux = [],
-                             selected_chapeau = 0):
+                             selected_chapeau = -1):
     count_flag = {}
     flags_importants = []
-    flag_matters = False
     for i,j in zip(liste_flags,liste_chapeaux):
         if not (i in count_flag.keys()):
-            count_flag[i] = 1
+            count_flag[i] = [1, False]
         else:
-            count_flag[i] += 1
-        if  j == selected_chapeau:
-            flag_matters = True
+            count_flag[i][0] += 1
+        if  (j == selected_chapeau) | (selected_chapeau == -1):
+            count_flag[i][1] = True
     for k in count_flag.keys():
-        if count_flag[k] >= nb_matchups_restants:
+        if (count_flag[k][0] >= nb_matchups_restants) & (count_flag[i][1]):
             flags_importants.append(k)
-    if not flag_matters:
-        flags_importants = []
     return flags_importants
 
 def determiner_vainqueur(equipe_dom, equipe_ext, resultat, agg_dom = -1,
