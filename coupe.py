@@ -22,7 +22,7 @@ def make_groupStage(nom_saison = '', resultat_saison = '', coupe_nationale = Tru
              nb_qualifies_poule = 2, nb_equipe_poule = 4,
              pts = [3,1,0],
              criterias = ['conf', 'diff', 'bp'], flag_exist = True,
-			 add_args = {}):
+             add_args = {}):
     
     
     
@@ -34,7 +34,7 @@ def make_groupStage(nom_saison = '', resultat_saison = '', coupe_nationale = Tru
         os.mkdir(resultat_saison)
     os.chdir(resultat_saison)
     print(liste_equipe)
-	
+
     
     groupes = {}
     

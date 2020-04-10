@@ -20,7 +20,7 @@ def create_schedule(list_, retour):
         mid = int(len(list_) / 2)
         l1 = list_[:mid]
         l2 = list_[mid:]
-        l2.reverse()	
+        l2.reverse()
 
         # Switch sides after each round
         liste_matchs = []
