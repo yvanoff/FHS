@@ -1,0 +1,5 @@
+# Tell git to automatically convert line endings
+* text=auto
+
+# Python files should always be converted
+*.py text
