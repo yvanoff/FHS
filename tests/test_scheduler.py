@@ -1,11 +1,11 @@
 """ This module contains tests for the scheduler. """
 import collections
 import itertools
-from typing import List, Tuple, Dict
+from typing import Dict, List
 
 import pytest
 
-from scheduler import create_schedule, Game, Team
+from scheduler import Game, Team, create_schedule
 
 
 def create_flattened_schedule(team_count: int, return_game: bool) -> List[Game]:
@@ -27,7 +27,6 @@ def create_flattened_schedule(team_count: int, return_game: bool) -> List[Game]:
     schedule: List[List[Game]] = create_schedule(team_list, return_game)
     # Flatten the schedule to have a single list containing all games
     return list(itertools.chain.from_iterable(schedule))
-
 
 
 @pytest.mark.parametrize("team_count", list(range(1, 10)))
