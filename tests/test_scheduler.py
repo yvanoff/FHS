@@ -41,10 +41,7 @@ def test_uniqueness(team_count: int, return_game: bool) -> None:
     return_game : bool
         Whether to generate return games.
     """
-    team_list: List[int] = list(range(team_count))
-    schedule: List[List[Tuple[int]]] = create_schedule(team_list, return_game)
-    # Flatten the schedule to have a single list containing all games
-    flattened_schedule: List[Tuple[int]] = list(itertools.chain.from_iterable(schedule))
+    flattened_schedule: List[Game] = create_flattened_schedule(team_count, return_game)
     # Compare the size of the set (containing unique elements) to the size of
     # the flattened schedule (containing all games)
     assert len(flattened_schedule) == len(set(flattened_schedule))
@@ -62,10 +59,7 @@ def test_length(team_count: int, return_game: bool) -> None:
     return_game : bool
         Whether to generate return games.
     """
-    team_list: List[int] = list(range(team_count))
-    schedule: List[List[Tuple[int]]] = create_schedule(team_list, return_game)
-    # Flatten the schedule to have a single list containing all games
-    flattened_schedule: List[Tuple[int]] = list(itertools.chain.from_iterable(schedule))
+    flattened_schedule: List[Game] = create_flattened_schedule(team_count, return_game)
     # The scheduling process adds a bogus team for odd counts
     # For the total number of games, this acts as if there was another team
     normalized_team_count: int = team_count
