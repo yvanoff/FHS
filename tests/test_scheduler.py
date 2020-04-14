@@ -4,7 +4,29 @@ from typing import List, Tuple
 
 import pytest
 
-from scheduler import create_schedule
+from scheduler import create_schedule, Game, Team
+
+
+def create_flattened_schedule(team_count: int, return_game: bool) -> List[Game]:
+    """ Creates a flattened schedule with the given team count.
+
+    Parameters
+    ----------
+    team_count : int
+        Number of teams generated for the schedule. Must be greater than zero.
+    return_game : bool
+        Whether to generate return games.
+
+    Returns
+    -------
+    List[Game]
+        A flattened schedule.
+    """
+    team_list: List[int] = list(range(team_count))
+    schedule: List[List[Game]] = create_schedule(team_list, return_game)
+    # Flatten the schedule to have a single list containing all games
+    return list(itertools.chain.from_iterable(schedule))
+
 
 
 @pytest.mark.parametrize("team_count", list(range(1, 10)))
