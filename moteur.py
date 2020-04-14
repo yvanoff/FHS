@@ -2,7 +2,7 @@
 """
 Created on Sat Feb 22 02:11:25 2020
 
-Moteur de match de foot
+Core Program file
 
 @author: alexa
 """
@@ -17,24 +17,31 @@ from copy import deepcopy
 
 def match_foot(metadata_dom, metadata_ext, arguments = {}):
     """
-    Génère un match de foot
-    Prend en entrée:
-        - les données de l'équipe à domicile
-        - les données de l'équipe à l'extérieur
-        - est-ce que les prolongations sont autorisées
-        - si il y a prolongations, y a-t-il un match aller à prendre en compte
-        - si il y a un match aller à prendre en compte, y a-t-il avantage aux
-        buts marqués à l'extérieur
-        - les tirs aux buts sont-ils autorisés
-        - le match se déroule-t-il sur terrain neutre
-    En sortie il renvoie un tuple contenant:
-        - le nombre de buts inscrits par l'équipe à domicile
-        - le nombre de buts inscrits par l'équipe à l'extérieur
-        - le détails des buts inscrits par l'équipe jouant à domicile
-        - le détails des buts inscrits par l'équipe jouant à l'extérieur
-        - le résultat des tirs aux buts
-        - le détail de la séance des tirs aux buts
+    Simulates a football match.
+
+    Parameters
+    ----------
+    metadata_dom : list of str
+                Raw data (from a .data file) of the hosting team
+    metadata_ext : list of str
+                Raw data of the away team
+    arguments : dict
+                Various settings used in the simulation
+
+    Returns
+    -------
+    tuple of int, int, list of str, list of str, bool, dict, dict
+                Returns, in a tuple:
+                - the number of goals scored by the home team
+                - the number of goals scored by the away team
+                - the goalscorers for the home team
+                - the goalscorers for the away team
+                - if extra time took place
+                - the score for the penalty shootout (if it took place)
+                - the summary of the penalty shootout
     """
+
+    # Init settings with base value
     params = { 'prolongations' : False,
               'agg_dom' : 0,
               'agg_ext' : 0,
@@ -418,7 +425,7 @@ def match_foot(metadata_dom, metadata_ext, arguments = {}):
     
     ### LES FORCES DE GARDIEN DES DEUX EQUIPES
     
-    ### D'ABORD CONTRES DES ATATQUES PLACESS
+    ### D'ABORD CONTRES DES ATTAQUES PLACEES
     force_gb_brute_h = (2/3)*statistiques_h['niveau_gb'] + (1/3)*statistiques_h['niveau_df']
     force_gb_nb_h = (1+statistiques_h['nb_df'])/(1+statistiques_h['nb_df']+statistiques_a['nb_att'])
     
@@ -472,6 +479,7 @@ def match_foot(metadata_dom, metadata_ext, arguments = {}):
     
     
     ### ON VA AUSSI ENREGISTRER QUELQUES STATS SUR LE MATCH
+    # deprecated but useful to learn things about the model
     statistiques_h['nb tirs'] = 0
     statistiques_h['domination'] = 0
     statistiques_h['buteurs'] = []
@@ -731,6 +739,7 @@ def match_foot(metadata_dom, metadata_ext, arguments = {}):
                 if but:
                     score_tabs[equipe_actuelle] += 1
                 res_tireurs[equipe_actuelle].append([tireurs[equipe_actuelle][(nb_tirs-1)%11], but])
+                # checking if we end early
                 if ((nb_tirs == 3) & (premiere_equipe != equipe_actuelle) &
                     (abs(score_tabs[equipe_actuelle]-score_tabs[equipe_attendant]) == 3)):
                     victoire = True

@@ -2,14 +2,9 @@
 """
 Created on Sun Mar 29 23:47:25 2020
 
-@author: alexa
-"""
+WIP
 
-import tkinter as tk
-import tkinter.filedialog
-from tkinter import ttk
-from coupe import make_knockout, make_groupStage
-from save_window import SaveWindow
+GUI file
 
 how to handle complex cup:
     - the different stages are organised in a listbox
@@ -25,8 +20,31 @@ how to handle complex cup:
     - an entry for the complex cup output folder
     - intermediary input/output folder for each stage will be handled internally
     - the name of the output directory of a stage will be the name of the stage in the list
-    
-so basically:
+
+
+    How to do that:
+
+    gui: label+button for input and output dir
+    listbox
+    button to add knockout stage
+    button to add group stage
+    button to edit and remove are independant of the type of groupe stage
+    button to move up/down
+
+    start:
+        calls each stage one by one with the correct parameters
+        gets the qualified teams and move them to the correct directories to feed the next stage
+
+@author: alexa
+"""
+
+import tkinter as tk
+import tkinter.filedialog
+from tkinter import ttk
+from coupe import make_knockout, make_groupStage
+from save_window import SaveWindow
+
+
     
 class GroupStageHolder:
     #contains the parameters of a group stage
@@ -116,14 +134,3 @@ class ComplexCup:
         self.output_path = tk.filedialog.askdirectory(initialdir=self.output_path,
                                                       title="Select directory")
         self.display_output_path.set('Current data directory: ' + self.output_path)
-    
-    gui: label+button for input and output dir
-    listbox
-    button to add knockout stage
-    button to add group stage
-    button to edit and remove are independant of the type of groupe stage
-    button to move up/down
-    
-    start:
-        calls each stage one by one with the correct parameters
-        gets the qualified teams and move them to the correct directories to feed the next stage

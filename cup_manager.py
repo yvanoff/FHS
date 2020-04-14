@@ -2,6 +2,8 @@
 """
 Created on Sun Mar 22 21:09:39 2020
 
+GUI file
+
 @author: alexa
 """
 
@@ -12,6 +14,7 @@ from coupe import make_knockout, make_groupStage
 from save_window import SaveWindow
 
 class GroupStageCreator:
+
     def __init__(self, master=None, cfgfile = None):
         self.master = master
         self.data_path = '.'

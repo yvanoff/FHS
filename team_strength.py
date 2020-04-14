@@ -1,3 +1,6 @@
+# won't be used as is, but will be the basis for the automatic team generator
+
+
 import random as rnd
 
 nb_players = int(input('Number of players: '))

@@ -2,6 +2,8 @@
 """
 Created on Sat Feb 29 14:59:08 2020
 
+Core program file
+
 @author: alexa
 """
 
@@ -13,6 +15,35 @@ import random as rnd
 
 def make_classement(liste_equipe, stats_saison,
                     tiebreakers = ['diff', 'bp', 'conf']):
+
+    """
+    Ranks teams according to their results.
+
+    Actually it doesn't do that much - we give it input the name of the teams and their point total, and it
+    sorts team in decreasing order of points. It becomes a bit more complex in case of ties between two or several
+    teams.
+    Uses the very inefficient bubble sorting - but then the umber of teams in a league is limited.
+
+    Parameters
+    ----------
+    liste_equipe : list of str
+                List of the names of the teams involved
+    stats_saison : dict
+                A dictionary holding all the useful informations about the teams' results
+    tiebreakers : list of str
+                Ranking of the tie breaker criterias used
+                See documentation for make_championnat
+
+    Returns
+    -------
+    list of tuple of str, int, int, int
+                Returns the teams ranked from top to bottom, with:
+                - team name
+                - number of points
+                - number of goals scored
+                - number of goals conceded
+    """
+
     classement_final = []
     for equipe in liste_equipe:
         pts_eq = stats_saison[equipe+'_stats'][5]
@@ -83,6 +114,42 @@ def make_classement(liste_equipe, stats_saison,
 def simuler_saison(liste_matches, liste_equipes, data_equipes, stats_saison,
                     pts_v = 3, pts_n = 1, pts_d = 0, poule = False,
                     additional_arguments = {}, tiebreakers = ['diff', 'bp', 'conf']):
+    """
+    Simulates a league season.
+
+    Like, really. You just feed it the matches to play and teams data, and it doesn everything for you. Isn't that nice ?
+    Writing documentation is slowly driving me insane, so excuse me for that.
+
+    The season's results are written in .txt files whose location depends on the arguments passed on to make_championnat
+    of make_groupStage (who are the only ones supposed to call this).
+
+    Parameters
+    ----------
+    liste_matches : list of list of Game
+                The list of matches to play. I think ?
+    liste_equipes : list of str
+                The list of the teams' names
+    data_equipes : dict
+                The teams' data (players etc)
+    stats_saison : dict
+                The season's statistics.
+    pts_v : int, optional
+                Points awarded for a victory
+    pts_n : int, optional
+                Points awarded for a draw
+    pts_d : int, optional
+                Points awarded for a loss
+    poule : bool, optional
+                True if we simulate a group stage in a cup.
+    additional_arguments : dict
+                Arguments to pass on to the match simulator
+    tiebreakers : list of str
+                Ranking of the tie breaker criterias used
+                See documentation for make_championnat
+
+    """
+
+
     compteur_journee = 0
     stats_saison['res_totaux'] = []
     tmp = []
@@ -143,6 +210,25 @@ def simuler_saison(liste_matches, liste_equipes, data_equipes, stats_saison,
         os.chdir('..')
 
 def make_buteurs(liste_equipe, stats_saison):
+    """
+     Ranks the top 3 goalscorers in a competition.
+
+     Returns only the top 3 goalscorers because otherwise it's a lot of information. Notice however that it doesn't
+     take ties into account (ie it can have 5 players in the "podium" if there are 2 2-way ties or one 3-way tie)).
+
+     Parameters
+     ----------
+     liste_equipe : list of str
+                 The list of the teams' names
+     stats_saison : dict
+                 The season's statistics.
+
+    Returns
+    -------
+    list of list
+                A list of the goalscorers, with their team and the nulber of goals scored
+     """
+
     podium = [[[''], -1],
               [[''], -1],
               [[''], -1]]
@@ -169,8 +255,40 @@ def make_buteurs(liste_equipe, stats_saison):
 def tirage_sort(liste_equipe, stats_equipes, equipes_ens = 2,
                 is_coupe_nat = True, liste_chapeaux = [], groupes = {},
                 flags_exist = True):
+    """
+     Makes a random draw for a cup.
+
+     It makes a draw for a group stage or for a round.
+
+     Parameters
+     liste_equipe : list of str
+                 The list of the teams' names
+     stats_equipes : dict
+                 The teams' statistics (flags etc)
+     equipe_ens : int, optional
+                 The number of teams to pair together. Base is 2, which means the draw will pair together two teams
+                 for a match. For a group stage set this to the number of teams per group (3,4,5,6,...)
+     is_coupe_nat : bool, optional
+                 Is it a national cup, in other words are teams coming from several countries or not (has implications
+                 for the draw because we want to avoid teams from the same country meeting early in an international
+                 competition)
+     liste_chapeaux : list of int, optional
+                 Are pots used in the draw. Pots were explained in the coupe.py file.
+     groupes : dict of int, optional
+                 The groups from which the teams come from, if applicable. We want to avoid teams from the same group
+                 meeting (since they already played each other, a rematch would be boring).
+     flags_exist : bool, optional
+                 Do flags exist. Explained in make_groupStage documentation. Not an elegant solution to a bug.
+
+     Returns
+     -------
+     list of list of str
+                The teams paired together
+     """
+
     nb_couples = int(len(liste_equipe)/equipes_ens)
     ok_group = False
+    # we'll be doing a draw until it is valid. A stupid way to proceed but the problem is simple enough for it to work
     while not ok_group:
         liste_res = []
         liste_tirage = deepcopy(liste_equipe)
@@ -185,22 +303,28 @@ def tirage_sort(liste_equipe, stats_equipes, equipes_ens = 2,
                     liste_chapeaux_eq.append(stats_equipes['chapeau_'+k])
                 bon_tirage = False
                 selected_chapeau = (len(liste_chapeaux)>0)-1
+                # do we account for pots
                 if (len(liste_chapeaux)-j > 0):
                     selected_chapeau = liste_chapeaux[j]
+                    # special edge case setting the pot to 0 in some configurations
                     if not (selected_chapeau in liste_chapeaux_eq):
                         selected_chapeau = 0
+                # see the doc underneath, for once we're trying to be clever instead of bruteforcing
                 mandatory_flags = trouver_flags_importants(liste_flags_eq,
                                                            nb_couples - i,
                                                            liste_chapeaux_eq,
                                                            selected_chapeau)
                 for f in banned_flags:
                     if f in mandatory_flags:
+                        # a flag can't be both banned and mandatory for a team to have, silly. So mandatory takes
+                        # priority
                         banned_flags.remove(f)
                 while not bon_tirage:
                     eq_choisie = rnd.choice(liste_tirage)
                     index_eq = liste_tirage.index(eq_choisie)
                     flag_choisi = liste_flags_eq[index_eq]
                     chapeau_choix = liste_chapeaux_eq[index_eq]
+                    # a painstaking way to account for all possibilities
                     bon_tirage = (((not (flag_choisi in banned_flags))|(banned_flags == [])) &
                                   ((flag_choisi in mandatory_flags)|is_coupe_nat|
                                    (mandatory_flags == [])) &
@@ -210,6 +334,7 @@ def tirage_sort(liste_equipe, stats_equipes, equipes_ens = 2,
                     banned_flags.append(flag_choisi)
                 couple_added.append(eq_choisie)
                 liste_tirage.remove(eq_choisie)
+            # here's why we need flag_exist
             if (flags_exist and is_coupe_nat and (equipes_ens == 2) and
                     (int(stats_equipes['flag_'+couple_added[0]]) <
                     int(stats_equipes['flag_'+couple_added[1]]))
@@ -232,6 +357,35 @@ def tirage_sort(liste_equipe, stats_equipes, equipes_ens = 2,
 def trouver_flags_importants(liste_flags, nb_matchups_restants,
                              liste_chapeaux = [],
                              selected_chapeau = -1):
+    """
+     Finds mandatory flags.
+
+     In an international competition gathering various teams for different countries, we don't want teams from a same
+     countries to meet - or at least to meet early. That's boring. So this function will take a look at the draw's
+     configuration and tell us if there is a country (ie a flag) a country needs to come from to avoid the possibility
+     of two teams from the same country meeting.
+     Example: we're making the draw for the round of 16 (8 matches). We're almost finished - 4 teams (2 matches)
+     remain. The teams come from Spain, Italy, England, and Italy. Then it is obvious that we MUST have a team from Italy
+     in the first match we draw, otherwise the two teams from Italy might meet in the last match.
+
+     But we also must take pots into accounts.
+
+     Parameters
+     liste_flags : list of str
+                 The list of the teams' flags
+     nb_matchups_restants : int
+                 The remaining number of matches to draw
+     liste_chapeaux : list of int, optional
+                 List of pots used in the draw
+     selected_chapeau : int, optional
+                 From which pot is the team we're going to draw coming from
+
+     Returns
+     -------
+     list of str
+                The flags teams must have in this draw to avoid two teams with the same flag meeting
+     """
+
     count_flag = {}
     flags_importants = []
     for i,j in zip(liste_flags,liste_chapeaux):
@@ -248,6 +402,33 @@ def trouver_flags_importants(liste_flags, nb_matchups_restants,
 
 def determiner_vainqueur(equipe_dom, equipe_ext, resultat, agg_dom = -1,
                          agg_ext = -1, buts_ext_x2 = False):
+
+    """
+     Determines the winner of a match.
+
+     That's pretty useful to know.
+
+     Parameters
+     equipe_dom : str
+                 Name of the home team
+     equipe_ext : str
+                 Name of the away team
+     resultat : tuple of int, int, list of str, list of str, bool, dict, dict
+                The result as returned by match_foot. Actually any tuple of two ints (the first number being the number
+                of goals for the home team, and the second for the away team) will do
+     agg_dom : int, optional
+                 If there was a first leg, how many goals the home team scored back then
+     agg_ext : int, optional
+                 If there was a first leg, how many goals the away team scored back then
+     buts_ext_x2 : bool, optional
+                 Do we use away goals as a tie breaker (see documentation in coupe.py)
+
+     Returns
+     -------
+     str
+                The name of the winning team, 'Personne' if nobody won.
+     """
+
     vainqueur = 'Personne'
     pts_dom = 0
     if agg_dom > agg_ext:
