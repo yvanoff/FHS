@@ -12,10 +12,12 @@ from scheduler import create_schedule
 def test_uniqueness(team_count: int, return_game: bool) -> None:
     """ Checks that schedules only have unique games.
 
-    Args:
-        team_count (int): Number of teams generated for the schedule. Must be
-            greater than zero.
-        return_game (bool): Whether to generate return games
+    Parameters
+    ----------
+    team_count : int
+        Number of teams generated for the schedule. Must be greater than zero.
+    return_game : bool
+        Whether to generate return games.
     """
     team_list: List[int] = list(range(team_count))
     schedule: List[List[Tuple[int]]] = create_schedule(team_list, return_game)
@@ -31,10 +33,12 @@ def test_uniqueness(team_count: int, return_game: bool) -> None:
 def test_length(team_count: int, return_game: bool) -> None:
     """ Checks that the schedule contains the appropriate game count.
 
-    Args:
-        team_count (int): Number of teams generated for the schedule. Must be
-            greater than zero.
-        return_game (bool): Whether to generate return games
+    Parameters
+    ----------
+    team_count : int
+        Number of teams generated for the schedule. Must be greater than zero.
+    return_game : bool
+        Whether to generate return games.
     """
     team_list: List[int] = list(range(team_count))
     schedule: List[List[Tuple[int]]] = create_schedule(team_list, return_game)
