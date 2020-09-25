@@ -7,18 +7,21 @@ CLI file
 @author: alexa
 """
 
+import engine
 import competitions
 
 VERSION_NUMBER = 2.0
 
+
 def main():
+
     """
         Command Line Interface to use the FHS (Football History Simulator). Temporary to test the program without
         implementing a GUI
     """
 
-    exit = False
-    while not exit:
+    exit_loop = False
+    while not exit_loop:
         print("Please choose the desired FHS mode to run:\n")
         print("1: Create, edit, generate or delete team files\n")
         print("2: Create, edit or delete competition files\n")
@@ -30,19 +33,24 @@ def main():
             choice = int(input("Select the mode to use: "))
         except ValueError:
             print("Please enter a number...\n")
-        if (choice == 1):
-            pass # Here will go the team editor
-        elif (choice == 2):
-            pass # Here will go the competition files editor
-        elif (choice == 3):
-            pass # Here will go the engine configuration files editor
-        elif (choice == 4):
-            competitionCfgPath = input("Please enter the path to the competition configuration file: ")
-            engineCfgPath = input("Please enter the path to the engine configuration file (leave blank if default"
-                                  "configuration is used): ")
-            competitions.init_competitions(competitionCfgPath, engineCfgPath)
+        if choice == 1:
+            pass  # Here will go the team editor
+        elif choice == 2:
+            pass  # Here will go the competition files editor
+        elif choice == 3:
+            pass  # Here will go the engine configuration files editor
+        elif choice == 4:
+            competition_cfg_path = input("Please enter the path to the competition configuration file: ")
+            engine_cfg_path = input("Please enter the path to the engine configuration file (leave blank if default"
+                                    "configuration is used): ")
+            competition = competitions.Competition(competition_cfg_path, engine_cfg_path)
+            competition.simulate()
+            competition.write()
+        elif choice == 5:
+            exit_loop = True
         else:
             print("Please enter a valid value...\n")
+
 
 if __name__ == "__main__":
     # execute only if run as a script

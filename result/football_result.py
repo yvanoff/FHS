@@ -1,12 +1,15 @@
 """
 Created on Sat Sep 12 2020
 
-File defining the Result class and classes used by it
+File defining the football Result class and related classes
 
 @author: alexa
 """
 
-class Result:
+from result.result import Result
+
+
+class FootballResult(Result):
     """
             Defines a football match's results.
 
@@ -14,21 +17,25 @@ class Result:
             ----------
             score : tuple of (int, int)
                         Tuple containing the number of goals scored by the home and away team respectively
-            homeTeam : Team
+            homeTeam : FootballClub
                         The home team
-            awayTeam : Team
+            awayTeam : FootballClub
                         The away team
-            homeTeamPlayers : Playing11
+            homeTeamPlayers : FootballTeam
                         The players for the home team
-            awayTeamPlayers : Playing11
+            awayTeamPlayers : FootballTeam
                         The players for the away team
             goals : list of Goal
                         List of the goals scored during the match
             penShootout : ResPenShootout
                         The result of a penalty shootout if one took place
-
+            neutralGround : bool
+                        Indicates if the match was played on neutral ground or not
+updateTeamStats: updates Team's stats and add to their results !
 
     """
+    pass
+
 
 class Goal:
     """
@@ -46,10 +53,12 @@ class Goal:
                         Flag indicating it it's an own goal
 
     """
+    pass
+
 
 class ResPenShootout:
     """
-            Defines the result of a penatly shootout.
+            Defines the result of a penalty shootout.
 
             Attributes
             ----------
@@ -59,6 +68,5 @@ class ResPenShootout:
                         The list of shooters for the home team and whether they scored or not
             awayResults : list of tuple of (Player, bool)
                         The list of shooters for the away team and whether they scored or not
-
-
     """
+    pass
