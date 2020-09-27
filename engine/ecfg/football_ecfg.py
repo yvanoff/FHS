@@ -1,7 +1,12 @@
 """
 Created on Fri Sep 25 2020
 
-File defining the football Engine Configuration and its parameters
+File defining the football Engine Configuration.
+
+My FootballEngine implementation of Engine requires some parameters used in the simulation to be set to values
+which one might want to change depending on various criteria.
+
+So this class reads a JSON file and initialize its parameters - which will be used by FootballEngine - using its content
 
 @author: alexa
 """
@@ -31,7 +36,8 @@ class FootballECfg(ECfg):
 
     def __init__(self, parameters_file=None):
         """
-           Initializes engine parameters from a file, or from nothing if the file isn't specified
+           Initializes engine parameters from a file, or from nothing if the file isn't specified (in which case
+           defaults values will be used).
 
            Parameters
            ----------

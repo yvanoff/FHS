@@ -1,7 +1,15 @@
 """
 Created on Fri Sep 25 2020
 
-File defining the generic Engine Configuration and its parameters
+File defining the generic Engine Configuration.
+
+This is just related to the Engine class: any Engine will require various parameters depending on the sport being
+simulated.
+
+So just override this class with an implementation for your sport so your Engine can grab its correct parameters
+from there
+
+You might not even need it (I need it for the Football version implemented alongside the original release of FHS).
 
 @author: alexa
 """

@@ -1,7 +1,9 @@
 """
 Created on Fri Sep 25 2020
 
-File defining a football Engine and its parameters
+Implementation of the Engine class in the case of Football (also known as Calcio/Soccer/Fussball)
+
+It will implement Engine for a Football match, so that a football match between two football teams can be simulated
 
 @author: alexa
 """
@@ -11,20 +13,26 @@ from engine.engine import Engine
 
 class FootballEngine(Engine):
     """
-            Defines the Engine.
+            Defines an Engine implementation for a Football Club. No changes in terms of attributes, it's mostly
+            the implementation of the methods which is interesting
 
             Attributes
             ----------
             parameters : FootballECfg
-                        The engine parameters
+                        The engine parameters. The class is specific to Football, and is designed for use with
+                        a FootballEngine
             neutralGround : bool
                         Flag indicating if the match is played on neutral ground or not
-            homeTeam : FootballTeam
-                        Players for the home team
-            awayTeam : FootballTeam
-                        Players for the away team
+            homeTeam : Club
+                        The home club
+            awayTeam : Club
+                        The away club
+            homeTeamPlayers : Team
+                        The players for the home team
+            awayTeamPlayers : Team
+                        The players for the away team
             result : FootballResult
-                        The match's result
+                        The match's result. It's a football match's result
 
             Methods
             -------
@@ -33,8 +41,9 @@ class FootballEngine(Engine):
                     attribute
             simulateExtraTime : str -> None
                     Plays 30 minutes of extra time according to the rules passed in Parameters, and updates the result
-            simulateShoutoout : None -> None
-                    Simulates a penalty shoutoot and updates the result with its conclusion
+            simulateShootout : None -> None
+                    Simulates a penalty shoutoot and updates the result with its conclusion. Specific to FootballEngine
+                    since a lot of sports don't have shootouts in case of ties
             getResult : None -> FootballResult
                     Returns the match's result
     """
@@ -56,7 +65,7 @@ class FootballEngine(Engine):
 
            Returns
            -------
-           Engine
+           FootballEngine
                 The initialized FootballEngine
         """
         # init with default values or by loading the file

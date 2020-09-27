@@ -1,7 +1,10 @@
 """
 Created on Fri Sep 25 2020
 
-File defining a football Player
+An implementation of Player to define a Football player.
+
+Unlike other subclasses this one defines a lot of stuff since we need to know a lot of informations about Football
+Players
 
 @author: alexa
 """
@@ -11,16 +14,21 @@ from player.player import Player
 
 class FootballPlayer(Player):
     """
-            Defines a Player.
+            Defines a Football Player. Besides the basic attributes set by the Player class we'll have plenty of
+            attributes which define characteristics rather specific to football
 
             Attributes
             ----------
             name : str
                         The player's name
+            nationality : str
+                        The player's nationality
             strength : int
-                        The player's overall strength
+                        The player's overall strength, or talent when it comes to playing Football. Defined with a
+                        basic scale going from 0 to 100 in mind, where the average Football player in one of Europe's
+                        top leagues (England/Spain/Germany/Italy) would be around 75
             penaltyTaker : bool
-                        Indicates if the player takes penalties usually
+                        Indicates if the player normally takes penalties
             positionAbilities : list of float
                         The list of ability of the player to play at each post. Contains 4 elements: the ability to
                         play as a goalkeeper, defender, midfielder and forward, respectively. The abilities are
@@ -28,8 +36,6 @@ class FootballPlayer(Player):
                         can play at this position and his strength there will be position ability * strength
             goalsScored : int
                         Number of goals scored by the player
-            nationality : str
-                        The player's nationality
 
             Methods
             -------
@@ -42,12 +48,12 @@ class FootballPlayer(Player):
 
     def __init__(self, player_data):
         """
-           Initializes a team data given by the Team constructor from an XML file
+           Initializes a FootballPlayer from data given by the FootballClub constructor, which reads an XML file
 
            Parameters
            ----------
            player_data : ?
-                       The player initialized
+                       The data defining the player as read in then XML file
 
            Returns
            -------

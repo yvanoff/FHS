@@ -1,7 +1,9 @@
 """
 Created on Sat Sep 12 2020
 
-File defining the football Result class and related classes
+Subclass of the Result class, defining a Football's match results.
+
+Also contains Goal and ResPenShootout class, which are used to define a Football match's results
 
 @author: alexa
 """
@@ -25,21 +27,22 @@ class FootballResult(Result):
                         The players for the home team
             awayTeamPlayers : FootballTeam
                         The players for the away team
-            goals : list of Goal
-                        List of the goals scored during the match
+            goals : tuple of list of Goal
+                        Tuple of two elements: first is the list of Goals scored by the home team, then is the list of
+                        Goals scored by the away team
             penShootout : ResPenShootout
-                        The result of a penalty shootout if one took place
+                        The result of a penalty shootout if one took place (a possibility in football)
             neutralGround : bool
                         Indicates if the match was played on neutral ground or not
 updateTeamStats: updates Team's stats and add to their results !
-
+write_results
     """
     pass
 
 
 class Goal:
     """
-            Defines a goal.
+            Defines a goal in the Football sport.
 
             Attributes
             ----------
