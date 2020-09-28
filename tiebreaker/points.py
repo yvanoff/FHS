@@ -3,6 +3,9 @@ Created on Fri Sep 25 2020
 
 File defining the Points Tiebreaker class
 
+Points are widely used in various sports to rank clubs, with a varying number of points being given depending on a
+match's result.
+
 @author: alexa
 """
 
@@ -11,7 +14,7 @@ from tiebreaker.tiebreakers import Tiebreaker
 
 class Points(Tiebreaker):
     """
-        Defines the Points Tiebreaker. Subclass of the Tiebreaker class
+        Defines the Points Tiebreaker. Subclass of the Tiebreaker class. Ranks Club from highest to lowest point total
 
         Methods
         -------

@@ -3,6 +3,9 @@ Created on Thu Sep 10 2020
 
 File defining the Competition class
 
+The Competition class, unsurprisingly, defines a competition for a given sport, simulates it, stores its
+results and can write them somewhere (main way to get the competition's results)
+
 @author: alexa
 """
 
@@ -15,7 +18,7 @@ import os
 
 class Competition:
     """
-            Defines a competition.
+            Defines a competition, for no particular sport (the hope is that it is usable by any sport).
 
             Attributes
             ----------

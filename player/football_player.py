@@ -3,7 +3,7 @@ Created on Fri Sep 25 2020
 
 An implementation of Player to define a Football player.
 
-Unlike other subclasses this one defines a lot of stuff since we need to know a lot of informations about Football
+Unlike other subclasses this one defines a lot of stuff since we need to know a lot of information about Football
 Players
 
 @author: alexa

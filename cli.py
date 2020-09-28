@@ -4,6 +4,10 @@ Created on Thu Sep 10 2020
 
 CLI file
 
+This file defines a Command-Line Interface (CLI) for the Football History Simulator project
+
+Just do python cli.py and enjoy !
+
 @author: alexa
 """
 
@@ -23,7 +27,7 @@ def main():
     exit_loop = False
     while not exit_loop:
         print("Please choose the desired FHS mode to run:\n")
-        print("1: Create, edit, generate or delete team files\n")
+        print("1: Create, edit, generate or delete club files\n")
         print("2: Create, edit or delete competition files\n")
         print("3: Create, edit or delete engine configuration files\n")
         print("4: Run a competition\n")
@@ -34,7 +38,7 @@ def main():
         except ValueError:
             print("Please enter a number...\n")
         if choice == 1:
-            pass  # Here will go the team editor
+            pass  # Here will go the club editor
         elif choice == 2:
             pass  # Here will go the competition files editor
         elif choice == 3:

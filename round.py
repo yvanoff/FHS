@@ -3,6 +3,15 @@ Created on Wed Sep 23 2020
 
 File defining the generic Round class
 
+This define a round of a competition. A round is just what it says: it's a stage of a competition. M teams enter the
+round, and once the round is over N teams remain, with M-N teams having been eliminated from the competition.
+
+There are various ways to eliminate teams; rounds may have various structures. This is why this class is generic.
+Subclasses implement the actual round types. As defined in the original programs there are only two round types defined
+(which should cover most use cases). It is not encouraged to add more Round types because the Competition manager would
+then need to be modified, and on top of that the Round class was not defined with other round types than League and
+Knockout in mind.
+
 @author: alexa
 """
 
@@ -16,6 +25,9 @@ class Round:
     """
         Defines a round. Mostly used as a type of interface, to be overridden by Round implementations
         (currently two).
+
+        A Round takes a list of Clubs, and plays itself to eliminate some of these teams based on matches results.
+        These results are saved so that either the Competition manager can access them, or to write them somewhere
 
         Attributes
         ----------
@@ -43,8 +55,6 @@ class Round:
                     Path to the file containing the parameters used by the engine during the match simulation
         tieBreakers : list of TieBreaker
                     List of the tie breakers criteria to be used ranked in order
-        points : list of int
-                    Number of points gained for a victory, a draw, a loss
 
         Methods
         -------
@@ -91,7 +101,6 @@ class Round:
         self.results = []
         self.clubs = self._load_clubs(self.clubsDataPath)
         self.tieBreakers = []
-        self.points = []
 
     def simulate(self, list_added_clubs=None):
         """
@@ -129,6 +138,12 @@ class Round:
     def _draw_round(self, clubs, nb_groups, nat, tier=False):
         """
            Draw teams together for a Round
+
+           Basically, n teams are given in input, and these n teams are spread across nb_groups pairings.
+           Some parameters (nat and tier) mad modify how the draw is conducted.
+           Teams are spread out evenly in all pairings, but if n % nb_groups > 0 some pairings will have 1 more club
+           than the others
+           Note that if pairings have an odd number of clubs in them, a dummy Bye club is added to ensure parity
 
            Parameters
            ----------
@@ -179,9 +194,23 @@ class Round:
         return draw
 
     def _load_clubs(self, data_path):
+        """
+           Draw teams together for a Round
+
+           Load club data in a directory
+
+           Parameters
+           ----------
+           data_path : str
+                The directory in which the clubs' data is located
+
+           Returns
+           -------
+           list of Club
+                The clubs loaded and ready to be used by the round
+        """
         clubs = []
         for file in os.scandir(data_path):
             if file.name.split(".")[1] == "xml":
-                # "sport" attribute so that here the correct Team class is loaded
                 clubs.append(choose_correct_club(self.sport, file.path))
         return clubs

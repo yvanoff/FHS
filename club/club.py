@@ -49,6 +49,9 @@ class Club:
                         Number of matches drawn by the club
             nbLosses : int
                         Number of matches lost by the club
+            points : int
+                        Number of points gained by the club. Most sports give a various number of points depending on
+                        the result of the match
             backUps : list of dict
                         A list of dictionaries used to back up some stats (namely, the aforementioned ones plus any
                         stats specific to your Club subclass relevant to the sport simulated)

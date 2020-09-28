@@ -3,23 +3,29 @@ Created on Fri Sep 25 2020
 
 File defining the League subclass of the Round class
 
+This defines a League kind of round. Basically the idea is simple: there are N teams which will play this round, they
+will play each other and at the end a ranking will be computed, with the best teams (exact number being a class
+attribute) progressing.
+
+Note that teams may be spread out in several smaller leagues at once, which will be played in parallel. For example,
+the UEFA Champions League has a group stage: 32 teams are spread out in 8 groups of 4 teams, with the best two teams
+of each group progressing. This is a League kind of Round
+
 @author: alexa
 """
 
-from tiebreaker.tiebreakers import choose_correct_tb
+from tiebreaker.tiebreakers import choose_correct_tb, HardcodedTiebreaker
 from round import Round
 from club.club import Bye
 from engine.engine import choose_correct_engine
 
 
-# pour le tableEachRound: simplement stocker les stats de l'équipe dans une liste
-# comme ça on a [nb pts J1, nb pts J2, etc...] et c'est facile de refaire la table
 # pour les conf directes on fait une backup des stats des équipes à égalité, on wipe, et on les recalcule sur les confs
 # directes
 # puis on rétabli les valeurs originales
 # pour éviter que le make_table prenne en compte des résultats qui ne se sont pas encore produits avec tableEachRound
 # et les confrontations directs
-# rajouter comme paramètre l'actuel numéro de journée
+# mais en fait on peut retrouver le nb de matchs joués à partir du nbWin/nbDraw/nbLosses donc c bon
 
 
 class League(Round):
@@ -28,6 +34,8 @@ class League(Round):
 
         Attributes
         ----------
+        points : list of int
+                    Number of points gained for a victory, a draw, a loss
         nbGroups : int
                     Number of groups (leagues to be simulated)
         tableEachRound : bool
@@ -96,7 +104,7 @@ class League(Round):
            list of Club
                 List of qualified clubs after this round
         """
-        # Init vars (making sure no leftover data pollutes everything
+        # Init vars (making sure no leftover data pollutes everything)
         # and drawing the teams in groups
         if list_added_clubs is None:
             list_added_clubs = []
@@ -211,7 +219,17 @@ class League(Round):
            list of Club
                 The clubs ranked according to the tie breakers
         """
-        tmp_table = self.tieBreakers[tiebreaker_used].tieBreak(clubs)
+        tmp_table = []
+        if not isinstance(self.tieBreakers[tiebreaker_used], HardcodedTiebreaker):
+            tmp_table = self.tieBreakers[tiebreaker_used].tieBreak(clubs)
+        else:
+            if self.tieBreakers[tiebreaker_used].name == 'conf-points':
+                tmp_table = self._conf_points(clubs)
+            elif (self.tieBreakers[tiebreaker_used].name.split('-')[0] == 'playoff') and (len(clubs) == 2):
+                # play a playoff match with et and pen parameters after the -
+                tmp_table = self._play_playoff(clubs, self.tieBreakers[tiebreaker_used].name)
+            else:
+                tmp_table = [clubs]
         final_table = []
         for group in tmp_table:
             if isinstance(group, list):

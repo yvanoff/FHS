@@ -3,6 +3,12 @@ Created on Fri Sep 25 2020
 
 File defining the GoalDifference Tiebreaker class
 
+This Tiebreaker is defined for any sport where the team have GoalsScored and GoalsConceded attributes
+
+It's mostly used in Football where the goal difference is widely used as a tie breaker,
+but it can be used for other sports if applicable
+
+
 @author: alexa
 """
 
@@ -11,7 +17,8 @@ from tiebreaker.tiebreakers import Tiebreaker
 
 class GoalDifference(Tiebreaker):
     """
-        Defines the Goal-difference Tiebreaker. Subclass of the Tiebreaker class
+        Defines the Goal-difference Tiebreaker. Subclass of the Tiebreaker class. It ranks Clubs from highest to
+        lowest goal difference, goal difference being GoalsScored-GoalsConceded
 
         Methods
         -------

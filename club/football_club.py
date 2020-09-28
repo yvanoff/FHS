@@ -36,6 +36,9 @@ class FootballClub(Club):
                         Number of matches drawn by the club
             nbLosses : int
                         Number of matches lost by the club
+            points : int
+                        Number of points gained by the club. Most sports give a various number of points depending on
+                        the result of the match
             goalsScored : int
                         Number of goals scored by the club in the competition
             goalsConceded : int

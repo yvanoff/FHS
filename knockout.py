@@ -3,6 +3,20 @@ Created on Fri Sep 25 2020
 
 File defining the Knockout subclass of the Round class
 
+There is another type of Round which is used in sport: the knockout round.
+
+Basically, it's a round where M teams enter. The M teams are drawn in duel where 2 teams play each other (the number
+of matches depend on the competition). Then the team with the best record wins the tie and qualifies; the other team
+loses and is eliminated
+
+So we have M teams which enter, and M/2 teams who qualify. Not that this is not exact: the number of teams may be odd,
+in which case one random team will be awarded a Bye - it will qualify automatically without playing
+
+A feature of Knockout rounds is that they tend to be chained together until one team wins. For example in the Coupe de
+France, 64 teams meet in the round of 64. 32 teams qualify for the round of 32. 16 teams qualify for the round of 16.
+8 teams qualify for the quarter finals. 4 teams qualify for the semi finals. 2 teams qualify for the final. 1 team
+wins the competition. So the ability to chain together Knockout round is important
+
 @author: alexa
 """
 
@@ -22,15 +36,6 @@ class Knockout(Round):
         nbRounds : int
                     Number of rounds to be played. If >= 2, the teams in the round 2 or afterwards will be the
                     teams who won in the previous round
-        extraTimeType : str
-                    Indicates the rules used for extra time. Can be "normal" (extra time will be 2 periods of 15
-                    minutes each, team who scores the most goals wins), "gg" (golden goal, extra time is maximum
-                    30 minutes played in two halves of 15min each but the first team to score wins) or "sg" (silver
-                    goal, extra time is also 2 halves of 15 minutes but if a team leads at half time they win) or
-                    "none" (no extra time in case of a draw)
-        nbReplaysBeforePens : int
-                    In case of a draw, number of times the match is replayed before we head to a penalty shootout.
-                    If this value is -1 no penalty shootout will be held
 
         Methods
         -------
@@ -66,18 +71,7 @@ class Knockout(Round):
         # - "normal" for the regular verison
         # - "gg" for golden goal
         # - "sg" for silver goal
-        self.extraTimeType = round_parameters['Round']['Extra_time']
 
-        # when to do a penalty shootout
-        # - -1 (actually anything smaller than 0) to never hold a pen shootout in case of a tie
-        # - 0 to hold a pen shootout immediately in case of a tie (no replay)
-        # - n with n>0 to hold a penalty shootout in case of a tie only after the match was replayed n times
-        if 'Nb_replays_before_penalty_shootout' in round_parameters['Round'].keys():
-            self.nbReplaysBeforePens = round_parameters['Round']['Nb_replays_before_penalty_shootout']
-        else:
-            self.nbReplaysBeforePens = -1
-
-        self.points = [1, 0, 0]
         self.tieBreakers = []
         for tb in round_parameters['Round']['Tie_breakers']:
             self.tieBreakers.append(choose_correct_tb(tb))
@@ -128,53 +122,9 @@ class Knockout(Round):
                         match_engine.simulateMatch()
                         res = match_engine.getResult()
                         list_conf.append(res)
-                        res.updateClubStats(self.points)
+                        res.updateClubStats()
                         res.updatePlayerStats()
                     winner = self._determine_tie_winner(m)
-                    if winner is None:
-                        # extra time case
-                        if self.extraTimeType != "":
-                            match_engine.simulateExtraTime(self.extraTimeType)
-                            res = match_engine.getResult()
-                            res.updateClubStats(self.points, True)
-                            res.updatePlayerStats(True)  # the flag is here to tell the res to update only the e.t. part
-                            list_conf.pop()
-                            list_conf.append(res)
-                            winner = self._determine_tie_winner(m)
-                        if winner is None:
-                            # pens/replays needed case
-                            while winner is None:
-                                nb_replays_done = 0
-                                # rajouter un if sport == foot pour l'instant on verra après
-                                if (nb_replays_done == self.nbReplaysBeforePens) and (self.sport == "foot"):  # immediate pens if no replays
-                                    match_engine.simulateShoutoout()
-                                    res = match_engine.getResult()
-                                    list_conf.pop()
-                                    list_conf.append(res)
-                                    winner = res.getPenWinners()
-                                elif winner is None:
-                                    match_engine = choose_correct_engine(self.sport, self.engineCfgPath, home_t, away_t,
-                                                                         True)
-                                    home_t, away_t = away_t, home_t
-                                    match_engine.simulateMatch()
-                                    res = match_engine.getResult()
-                                    list_conf.append(res)
-                                    res.updateClubStats(self.points)
-                                    res.updatePlayerStats()
-                                    winner = self._determine_tie_winner(m)
-                                    if winner is None:
-                                        # extra time case
-                                        if self.extraTimeType != "":
-                                            match_engine.simulateExtraTime(self.extraTimeType)
-                                            res = match_engine.getResult()
-                                            res.updateClubStats(self.points, True)
-                                            res.updatePlayerStats(True)
-                                            list_conf.pop()
-                                            list_conf.append(res)
-                                            winner = self._determine_tie_winner(m)
-                                    nb_replays_done += 1
-                                else:
-                                    print("Something weird is going on when determining the winner of a tie")
                     res_round.append(list_conf)
                     qualified_clubs.append(winner)
                 else:
@@ -220,7 +170,7 @@ class Knockout(Round):
 
     def _determine_tie_winner(self, clubs):
         """
-           Determines the winner of a tie
+           Determines the winner of a tie by applying the round's tie-breakers
 
            Parameters
            ----------

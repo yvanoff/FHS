@@ -3,6 +3,11 @@ Created on Fri Sep 25 2020
 
 File defining the Away goals scored Tiebreaker class
 
+This Tiebreaker is defined for any sport where the team have an AwayGoalsScored attribute
+
+It's mostly used in Football where the number of goals scored away from home may be used as a tie breaker,
+but it can be used for other sports if applicable
+
 @author: alexa
 """
 
@@ -11,7 +16,8 @@ from tiebreaker.tiebreakers import Tiebreaker
 
 class AwayGoalsScored(Tiebreaker):
     """
-        Defines the Away Goals scored Tiebreaker. Subclass of the Tiebreaker class
+        Defines the Away Goals scored Tiebreaker. Subclass of the Tiebreaker class. Ranks Clubs according
+        to the value of their AwayGoalsScored attribute from highest to lowest
 
         Methods
         -------

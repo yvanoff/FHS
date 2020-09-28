@@ -3,6 +3,12 @@ Created on Fri Sep 25 2020
 
 File defining the Goals scored Tiebreaker class
 
+This Tiebreaker is defined for any sport where the team have an GoalsScored attribute
+
+It's mostly used in Football where the number of goals scored may be used as a tie breaker,
+but it can be used for other sports if applicable
+
+
 @author: alexa
 """
 
