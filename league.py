@@ -14,10 +14,12 @@ of each group progressing. This is a League kind of Round
 @author: alexa
 """
 
-from tiebreaker.tiebreakers import choose_correct_tb, HardcodedTiebreaker
+from tiebreaker.tiebreakers import HardcodedTiebreaker
+from tiebreaker.selection import choose_correct_tb
 from round import Round
 from club.club import Bye
-from engine.engine import choose_correct_engine
+from engine.selection import choose_correct_engine
+import os
 
 
 # pour les conf directes on fait une backup des stats des équipes à égalité, on wipe, et on les recalcule sur les confs
@@ -125,11 +127,11 @@ class League(Round):
                     if not ((type(match[0]) is Bye) or (type(match[1]) is Bye)):
                         match_engine = choose_correct_engine(self.sport, self.engineCfgPath, match[0], match[1],
                                                              self.neutralGround)
-                        match_engine.simulateMatch()
-                        res = match_engine.getResult()
+                        match_engine.simulate_match()
+                        res = match_engine.result
                         matchday_results.append(res)
-                        res.updateClubStats(self.points)
-                        res.updatePlayerStats()
+                        res.update_club_stats(self.points)
+                        res.update_player_stats()
                 group_results.append(matchday_results)
             league_table = self._make_table(g, 0)
             self.table.append(league_table)
@@ -138,7 +140,8 @@ class League(Round):
                 if self.potForAdvancing:
                     league_table[c].updatePot(c)
                 else:
-                    league_table[c].resetPot()
+                    pass
+                    # league_table[c].resetPot()
             self.results.append(group_results)
         return qualified_clubs
 
@@ -149,7 +152,35 @@ class League(Round):
         # it's just about parsing self.results and writing them all in the good sub-folder
         # then write the league table at the end
         # if self.tableEachRound requires it, we need to compute the table for each matchday
-        pass
+
+        # perhaps do something to not have a competition/round/results folder in case there's only one group
+        for i_n in range(len(self.names)):
+            try:
+                n = self.names[i_n]
+                og_dir = os.getcwd()
+                os.mkdir(n)
+                os.chdir(n)
+                for matchday_number in range(len(self.results[i_n])):
+                    try:
+                        new_og_dir = os.getcwd()
+                        os.mkdir("Matchday "+str(matchday_number+1))
+                        os.chdir("Matchday "+str(matchday_number+1))
+                        for match in self.results[i_n][matchday_number]:
+                            match.write()
+                            if self.tableEachRound:
+                                # we ought to do something here !
+                                # implement that later
+                                pass
+                        os.chdir(new_og_dir)
+                    except FileExistsError:
+                        print("File already exists; aborting....")
+                table_file = open("final_table.txt", "w+")
+                table_file.write("Final table for "+n+"\n\n")
+                for club_i in range(len(self.table[i_n])):
+                    table_file.write(str(club_i+1)+". "+self.table[i_n][club_i].write_table_data()+"\n")
+                os.chdir(og_dir)
+            except FileExistsError:
+                print("File already exists; aborting....")
 
     def _make_schedule(self, group, nb_confrontations):
         """
@@ -219,27 +250,42 @@ class League(Round):
            list of Club
                 The clubs ranked according to the tie breakers
         """
-        tmp_table = []
-        if not isinstance(self.tieBreakers[tiebreaker_used], HardcodedTiebreaker):
-            tmp_table = self.tieBreakers[tiebreaker_used].tieBreak(clubs)
+        # temporary workaround, I want to test the program first
+        # the tiebreakers can wait
+        # BUT THEY'LL NEED TO BE IMPLEMENTED AT SOME POINT !!!
+        if True:
+            final_table = []
+            points_tuple = []
+            for club in clubs:
+                points_tuple.append((club.points, club))
+            points_tuple = sorted(points_tuple, key=self._first, reverse=True)
+            for c in points_tuple:
+                final_table.append(c[1])
         else:
-            if self.tieBreakers[tiebreaker_used].name == 'conf-points':
-                tmp_table = self._conf_points(clubs)
-            elif (self.tieBreakers[tiebreaker_used].name.split('-')[0] == 'playoff') and (len(clubs) == 2):
-                # play a playoff match with et and pen parameters after the -
-                tmp_table = self._play_playoff(clubs, self.tieBreakers[tiebreaker_used].name)
+            tmp_table = []
+            if not isinstance(self.tieBreakers[tiebreaker_used], HardcodedTiebreaker):
+                tmp_table = self.tieBreakers[tiebreaker_used].tieBreak(clubs)
             else:
-                tmp_table = [clubs]
-        final_table = []
-        for group in tmp_table:
-            if isinstance(group, list):
-                if (tiebreaker_used+1) < len(self.tieBreakers):
-                    broken_group = self._make_table(group, tiebreaker_used+1)
+                # to define but later
+                if self.tieBreakers[tiebreaker_used].name == 'conf-points':
+                    tmp_table = self._conf_points(clubs)
+                elif (self.tieBreakers[tiebreaker_used].name.split('-')[0] == 'playoff') and (len(clubs) == 2):
+                    # play a playoff match with et and pen parameters after the -
+                    tmp_table = self._play_playoff(clubs, self.tieBreakers[tiebreaker_used].name)
                 else:
-                    broken_group = group
-                for t in broken_group:
-                    final_table.append(t)
-            else:
-                final_table.append(group)
-
+                    tmp_table = [clubs]
+            final_table = []
+            for group in tmp_table:
+                if isinstance(group, list):
+                    if (tiebreaker_used+1) < len(self.tieBreakers):
+                        broken_group = self._make_table(group, tiebreaker_used+1)
+                    else:
+                        broken_group = group
+                    for t in broken_group:
+                        final_table.append(t)
+                else:
+                    final_table.append(group)
         return final_table
+
+    def _first(self, _tuple):
+        return _tuple[0]

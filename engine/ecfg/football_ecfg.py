@@ -12,6 +12,7 @@ So this class reads a JSON file and initialize its parameters - which will be us
 """
 
 from engine.ecfg.ecfg import ECfg
+import json
 
 
 class FootballECfg(ECfg):
@@ -20,21 +21,21 @@ class FootballECfg(ECfg):
 
             Attributes
             ----------
-            bonusDom : float
+            bonusHome : float
                         The strength multiplier for teams playing at home
-            penProba : float
+            penProb : float
                         Percentage of the number of goals scored on penalties
-            ogProba : float
+            ogProb : float
                         Percentage of the number of goals which are own goals
             penaltyTerm : float
                         A penalty term used in the engine. Basically it should be decreased when the strength of teams
                         lowered, otherwise there can be issues with weak teams having trouble scoring even against
                         teams just as weak
-            penScoringProba : float
-                        Probability to score a penalty. Used in penalty shoutoots
+            penScoringProb : float
+                        Probability to score a penalty. Used in penalty shootouts
     """
 
-    def __init__(self, parameters_file=None):
+    def __init__(self, parameters_file=''):
         """
            Initializes engine parameters from a file, or from nothing if the file isn't specified (in which case
            defaults values will be used).
@@ -49,5 +50,19 @@ class FootballECfg(ECfg):
            FootballECfg
                 The initialized EngineCfg object
         """
-        # init with default values or by loading the file
-        pass
+        if parameters_file == '':
+            self.bonusHome = 1.025
+            self.penProb = 0.08
+            self.ogProb = 0.03
+            self.penaltyTerm = 2.0
+            self.penScoringProb = 0.7
+        else:
+            comp_cfg_file = open(parameters_file)
+            comp_cfg = comp_cfg_file.read()
+            comp_cfg_file.close()
+            json_cfg = json.loads(comp_cfg)
+            self.bonusHome = json_cfg['bonus_home']
+            self.penProb = json_cfg['pen_threshold']
+            self.ogProb = json_cfg['prob_og']
+            self.penaltyTerm = json_cfg['penalty_term']
+            self.penScoringProb = json_cfg['prob_goal_pen']

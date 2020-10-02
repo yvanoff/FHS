@@ -11,8 +11,8 @@ Just do python cli.py and enjoy !
 @author: alexa
 """
 
-import engine
-import competitions
+from competitions import Competition
+from football__club_generator import generator_interface
 
 VERSION_NUMBER = 2.0
 
@@ -38,7 +38,8 @@ def main():
         except ValueError:
             print("Please enter a number...\n")
         if choice == 1:
-            pass  # Here will go the club editor
+            path = input("Please type the directory in which files will be generated: ")
+            generator_interface(path)
         elif choice == 2:
             pass  # Here will go the competition files editor
         elif choice == 3:
@@ -47,7 +48,7 @@ def main():
             competition_cfg_path = input("Please enter the path to the competition configuration file: ")
             engine_cfg_path = input("Please enter the path to the engine configuration file (leave blank if default"
                                     "configuration is used): ")
-            competition = competitions.Competition(competition_cfg_path, engine_cfg_path)
+            competition = Competition(competition_cfg_path, engine_cfg_path)
             competition.simulate()
             competition.write()
         elif choice == 5:

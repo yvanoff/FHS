@@ -1,0 +1,26 @@
+{
+  "Name" : "TestLeague",
+  "Output_directory" : "Test_res5",
+  "Output_directory_for_qualified_teams_data" : "",
+  "Is_nationality_important" : false,
+  "Is_club_level_important" : false,
+  "Sport": "foot",
+  "Statistics" : [],
+  "Rounds" : [
+  {
+    "Clubs_data" : "/home/yvanoff/FHS_tests/team_data",
+    "Names" : ["TestLeague_1"],
+    "League" :
+    {
+
+      "Nb_groups": 1,
+      "Tie_breakers": [],
+      "Table_each_round": false,
+      "Points_per_result": [3,1,0],
+      "Nb_qualified": 2,
+      "Pots_for_qualified_teams": false
+    },
+    "Nb_times_teams_play_each_other": 2,
+    "Matches_on_neutral_ground": false
+  }]
+}

@@ -52,13 +52,39 @@ class FootballPlayer(Player):
 
            Parameters
            ----------
-           player_data : ?
-                       The data defining the player as read in then XML file
+           player_data : xml.etree.ElementTree.Element
+                       The data defining the player as read in then XML file. It's an XML node
 
            Returns
            -------
            FootballPlayer
                 The initialized FootballPlayer
         """
-        # init by loading the file
-        pass
+        super().__init__(player_data)
+        self.strength = 0
+        self.penaltyTaker = False
+        self.positionAbilities = [0, 0, 0, 0]
+        self.goalsScored = 0
+
+        raw_elements = list(player_data)
+        for e in raw_elements:
+            if e.tag == 'name':
+                self.name = e.text
+            elif e.tag == 'country':
+                self.nationality = e.text
+            elif e.tag == 'strength':
+                self.strength = int(e.text)
+            elif e.tag == 'pen_shooter':
+                self.penaltyTaker = (e.text == "Yes")
+            elif e.tag == 'goals':
+                self.goalsScored = int(e.text)
+            elif e.tag == 'gk_ability':
+                self.positionAbilities[0] = float(e.text)
+            elif e.tag == 'df_ability':
+                self.positionAbilities[1] = float(e.text)
+            elif e.tag == 'md_ability':
+                self.positionAbilities[2] = float(e.text)
+            elif e.tag == 'fw_ability':
+                self.positionAbilities[3] = float(e.text)
+            else:
+                print("Unknown data in the player data ! Ignoring....")

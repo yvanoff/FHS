@@ -14,8 +14,6 @@ You might not even need it (I need it for the Football version implemented along
 @author: alexa
 """
 
-from engine.ecfg.football_ecfg import FootballECfg
-
 
 class ECfg:
     """

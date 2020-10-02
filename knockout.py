@@ -20,10 +20,10 @@ wins the competition. So the ability to chain together Knockout round is importa
 @author: alexa
 """
 
-from tiebreaker.tiebreakers import choose_correct_tb
+from tiebreaker.selection import choose_correct_tb
 from round import Round
 from club.club import Bye
-from engine.engine import choose_correct_engine
+from engine.selection import choose_correct_engine
 import os
 
 
@@ -110,6 +110,11 @@ class Knockout(Round):
             match_list = self._draw_round(self.clubs, (len(self.clubs) / +1) / 2, self.isNatImp, self.isTierImp)
             qualified_clubs = []
             for m in match_list:
+                # s'arrêter si quelqu'un gagne (floor(nb_matches_max/2))+1 matches
+                # genre on s'arrête si quelqu'un gagne 4 matchs quand la confrontation se joue sur 7
+                # quand un joueur de tennis a gagné 3 sets (2 pour les joueuses)
+                # etc
+                # MAIS ON S'ARRETE PAS SI UNE EQUIPE A GAGNEE QUE L'ALLER
                 if not ((type(m[0]) is Bye) or (type(m[1]) is Bye)):
                     list_conf = []
                     for c in range(self.nbConfrontations):
@@ -120,7 +125,7 @@ class Knockout(Round):
                         match_engine = choose_correct_engine(self.sport, self.engineCfgPath, home_t, away_t,
                                                              self.neutralGround)
                         match_engine.simulateMatch()
-                        res = match_engine.getResult()
+                        res = match_engine.result
                         list_conf.append(res)
                         res.updateClubStats()
                         res.updatePlayerStats()
@@ -157,10 +162,11 @@ class Knockout(Round):
                 for list_conf in self.results[i_n]:
                     try:
                         new_og_dir = os.getcwd()
-                        os.mkdir(list_conf[0].get_home_club().upper()+"_"+list_conf[0].get_away_club().upper())
-                        os.chdir(list_conf[0].get_home_club().upper()+"_"+list_conf[0].get_away_club().upper())
-                        for conf in list_conf:
-                            conf.write()
+                        os.mkdir(list_conf[0].home.upper()+"_"+list_conf[0].away.upper())
+                        os.chdir(list_conf[0].home.upper()+"_"+list_conf[0].away.upper())
+                        for conf_i in range(len(list_conf)):
+                            conf = list_conf[conf_i]
+                            conf.write(list_conf[:conf_i])
                         os.chdir(new_og_dir)
                     except FileExistsError:
                         print("File already exists; aborting....")
@@ -182,11 +188,16 @@ class Knockout(Round):
            Team
                 The winning club if applicable - none otherwise
         """
+        # MODIFY TO HAVE ACTUAL ET/PENS/PLAYOFFS TIE BREAKERS WORKING
+        # note: si on fait un playoff, mais le nombre de confrontations est impair
+        # jouer le premier playoff pas sur terrain neutre mais chez l'équipe qui a le moins reçu
         winner = None
         i = 0
         while (winner is None) or (i < len(self.tieBreakers)):
             ranking = self.tieBreakers[i].tieBreak(clubs)
             if not isinstance(ranking[0], list):
                 winner = ranking[0]
+            else:
+                winner = clubs[0]
             i += 1
         return winner

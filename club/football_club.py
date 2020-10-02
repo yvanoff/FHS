@@ -5,10 +5,20 @@ Implementation of the Club class in the case of Football (also known as Calcio/S
 
 It uses all the attributes defined for a Club but adds attributes specific to Football
 
+It also defines a Tactic class which defines a football tactical scheme
+
+
+
 @author: alexa
 """
 
+# distinction between the stats
+# we can init the points or the goals scored but can't export them ?
+
 from club.club import Club
+import xml.etree.ElementTree as ET
+from player.football_player import FootballPlayer
+import os
 
 
 class FootballClub(Club):
@@ -50,6 +60,14 @@ class FootballClub(Club):
                         stats specific to your Club subclass relevant to the sport simulated)
             matchList : list of FootballResult
                         The Club's results. In this case it's not generic Results, but Football results
+            tactics : list of Tactic
+                        The list of the tactical setups used by the managers for a match. Football teams may line up
+                        in various setups. Some manager always play the same setup, with the players always placed
+                        at the same place on the pitch. Other managers like to change (for example, to adapt to their
+                        opponent), so they will position their players differently in different matches. This list
+                        of Tactic setups allow us to represent this flexibility.
+                        Although the current football engine will just pick a tactic at random, so it's pretty limited
+                        for now, but it could be expanded upon later on.
 
             Methods
             -------
@@ -91,5 +109,156 @@ class FootballClub(Club):
            FootballClub
                 The initialized FootballClub
         """
-        # init by loading the file
-        pass
+        super().__init__(club_data)
+        self.goalsScored = 0
+        self.goalsConceded = 0
+        self.awayGoalsScored = 0
+        self.tactics = []
+
+        club_tree = ET.parse(club_data)
+        club_root_list = list(club_tree.getroot())
+        for e in club_root_list:
+            if e.tag == 'name':
+                self.name = e.text
+            elif e.tag == 'country':
+                self.nationality = e.text
+            elif e.tag == 'tier':
+                self.tier = int(e.text)
+            elif e.tag == 'pot':
+                self.pot = int(e.text)
+            elif e.tag == 'won':
+                self.nbWin = int(e.text)
+            elif e.tag == 'lost':
+                self.nbLosses = int(e.text)
+            elif e.tag == 'drawn':
+                self.nbDrawn = int(e.text)
+            elif e.tag == 'points':
+                self.points = int(e.text)
+            elif e.tag == 'scored':
+                self.goalsScored = int(e.text)
+            elif e.tag == 'conceded':
+                self.goalsConceded = int(e.text)
+            elif e.tag == 'scored_away':
+                self.awayGoalsScored = int(e.text)
+            elif e.tag == 'tactic':
+                w = 0
+                df = 0
+                md = 0
+                fw = 0
+                for e_tac in list(e):
+                    if e_tac.tag == 'weight':
+                        w = float(e_tac.text)
+                    elif e_tac.tag == 'formation':
+                        raw_f = e_tac.text
+                        df = int(raw_f.split("-")[0])
+                        md = int(raw_f.split("-")[1])
+                        fw = int(raw_f.split("-")[2])
+                    else:
+                        print("Unknown element in the tactical setup ! Ignoring...")
+                self.tactics.append(Tactic(df, md, fw, w))
+            elif e.tag == 'player':
+                self.players.append(FootballPlayer(e))
+            else:
+                print("Unknown data in the Club data file ! Ignoring....")
+
+    def export_to_xml(self, path=None, filename=None):
+        """
+           Exports the club data to an XML file that can then be used by the Competition managers to init a Club
+
+           Parameters
+           ----------
+           path : str
+                       The path at which the output file will be located. If not specified, a file will be created in
+                       the current directory. Otherwise, a file will be created in the specified directory
+           filename : str
+                        Specifies the name of the file to be created. If not specified, it will default to
+                        self.name+.xml
+        """
+        og_dir = "."
+        if path is not None:
+            og_dir = os.getcwd()
+            os.chdir(path)  # Do some exception treatment here !
+        target_name = filename
+        if filename is None:
+            target_name = self.name + ".xml"
+        root = ET.Element("club")
+        name = ET.SubElement(root, "name")
+        name.text = self.name
+        country = ET.SubElement(root, "country")
+        country.text = self.nationality
+        tier = ET.SubElement(root, "tier")
+        tier.text = str(self.tier)
+        pot = ET.SubElement(root, "pot")
+        pot.text = str(self.pot)
+        for t in self.tactics:
+            current_tact = ET.SubElement(root, "tactic")
+            formation = ET.SubElement(current_tact, "formation")
+            weight = ET.SubElement(current_tact, "weight")
+            formation.text = str(t.nbDf) + "-" + str(t.nbMd) + "-" + str(t.nbFw)
+            weight.text = str(t.weight)
+        for p in self.players:
+            current_player = ET.SubElement(root, "player")
+            player_name = ET.SubElement(current_player, "name")
+            player_name.text = p.name
+            player_nat = ET.SubElement(current_player, "country")
+            player_nat.text = p.nationality
+            player_str = ET.SubElement(current_player, "strength")
+            player_str.text = str(p.strength)
+            player_pen = ET.SubElement(current_player, "pen_shooter")
+            player_pen.text = str(p.penaltyTaker)
+            player_gk = ET.SubElement(current_player, "gk_ability")
+            player_gk.text = str(p.positionAbilities[0])
+            player_df = ET.SubElement(current_player, "df_ability")
+            player_df.text = str(p.positionAbilities[1])
+            player_md = ET.SubElement(current_player, "md_ability")
+            player_md.text = str(p.positionAbilities[2])
+            player_fw = ET.SubElement(current_player, 'fw_ability')
+            player_fw.text = str(p.positionAbilities[3])
+
+        tree = ET.ElementTree(root)
+        tree.write(target_name)
+        if path is not None:
+            os.chdir(og_dir)
+
+    def write_table_data(self):
+        """
+           Returns the club data under the form of a string, so it can be used to write a table
+
+           Returns
+           ----------
+           str
+                       The string containing the club's relevant data for its ranking. Standardize the format
+                       for your own sport
+        """
+        ranking_string = self.name + ", " + str(self.points) + " pts, " +\
+                                     str(self.nbWin + self.nbDrawn + self.nbLosses) + "P:" +\
+                                     str(self.nbWin) + "W/" + str(self.nbDrawn) + "D/" + str(self.nbLosses) + "L, " +\
+                                     str(self.goalsScored)+"GS, "+str(self.goalsConceded) +\
+                                     "GC, Diff:"+str(self.goalsScored-self.goalsConceded)
+        return ranking_string
+
+
+class Tactic:
+    """
+            Representation of a football tactical setup
+            Currently very simple due to the simplified engine but may be elaborated upon in the future
+            Weight is the probability to pick up this tactic (like I said, the tactics themselves and the selection
+            process are a bit too simple at the moment, but this'll do)
+
+            Attributes
+            ----------
+            nbDf : int
+                        Number of defenders in the setup
+            nbMd : int
+                        Number of midfielders in the setup
+            nbFw : int
+                        Number of forwards in the setup
+            weight : float
+                        weight of this tactical setup
+    """
+
+    def __init__(self, df, mf, fw, w):
+        self.nbDf = df
+        self.nbMd = mf
+        self.nbFw = fw
+        self.weight = w

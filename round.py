@@ -15,7 +15,8 @@ Knockout in mind.
 @author: alexa
 """
 
-from club.club import Bye, choose_correct_club
+from club.club import Bye
+from club.selection import choose_correct_club
 import os
 import random
 
@@ -124,17 +125,6 @@ class Round:
         """
         pass
 
-    def get_clubs(self):
-        """
-           Returns the teams loaded for this round
-
-           Returns
-           -------
-           list of Team
-                The list of teams taking part in this round
-        """
-        return self.clubs
-
     def _draw_round(self, clubs, nb_groups, nat, tier=False):
         """
            Draw teams together for a Round
@@ -166,11 +156,11 @@ class Round:
         pots = []
         clubs_by_pot = {}
         for c in clubs:
-            if c.get_pot() not in pots:
-                pots.append(c.get_pot())
-                clubs_by_pot[c.get_pot()] = [c]
+            if c.pot not in pots:
+                pots.append(c.pot)
+                clubs_by_pot[c.pot] = [c]
             else:
-                clubs_by_pot[c.get_pot()].append(c)
+                clubs_by_pot[c.pot].append(c)
         pots = sorted(pots)
         if pots[0] == 0:
             pots.append(pots.pop(0))
@@ -186,7 +176,7 @@ class Round:
                     current_group = 0
         if tier:
             for i in range(len(draw)):
-                if (len(draw[i]) == 2) and (draw[i][0].get_tier() < draw[i][1].get_tier()):
+                if (len(draw[i]) == 2) and (draw[i][0].tier < draw[i][1].tier):
                     draw[i] = [draw[i][1], draw[i][0]]
         for i in range(len(draw)):
             if (len(draw[i]) % 2) == 1:

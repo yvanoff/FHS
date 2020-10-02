@@ -25,14 +25,6 @@ as input. If you implement a tie-breaking criteria based on the Tiebreaker class
 @author: alexa
 """
 
-from tiebreaker.away_goals_scored import AwayGoalsScored
-from tiebreaker.conf_away_goals_scored import ConfAwayGoalsScored
-from tiebreaker.conf_goal_difference import ConfGoalDifference
-from tiebreaker.conf_goals_scored import ConfGoalsScored
-from tiebreaker.goal_difference import GoalDifference
-from tiebreaker.goals_scored import GoalsScored
-from tiebreaker.points import Points
-
 
 class Tiebreaker:
     """
@@ -81,41 +73,3 @@ class HardcodedTiebreaker(Tiebreaker):
 
     def tie_break(self, teams):
         pass
-
-
-def choose_correct_tb(tb_name):
-    correct_tb = None
-    # here we init the tiebreakers
-    # possible values are:
-    # - points to rank the teams according to their number of points
-    # - diff to rank teams according to their goal difference
-    # - gs to rank teams according to the number of goals scored
-    # - ags to rank teams according to the number of goals scored away from home
-    # - conf-points to rank teams according to the points won during their confrontations
-    # - conf-diff to rank teams according to their goal difference during their confrontations
-    # - conf-gs  to rank teams according to the goals scored during their confrontations
-    # - conf-ags  to rank teams according to the away goals scored during their confrontations
-    # - playoff to hold a playoff between two tied teams (HARDCODED)
-    if tb_name == 'points':
-        correct_tb = Points(tb_name)
-    elif tb_name == 'diff':
-        correct_tb = GoalDifference(tb_name)
-    elif tb_name == 'gs':
-        correct_tb = GoalsScored(tb_name)
-    elif tb_name == 'ags':
-        correct_tb = AwayGoalsScored(tb_name)
-    elif tb_name == 'conf-points':
-        correct_tb = HardcodedTiebreaker(tb_name)
-    elif tb_name == 'conf-diff':
-        correct_tb = ConfGoalDifference(tb_name)
-    elif tb_name == 'conf-gs':
-        correct_tb = ConfGoalsScored(tb_name)
-    elif tb_name == 'conf-ags':
-        correct_tb = ConfAwayGoalsScored(tb_name)
-    elif tb_name == 'playoff':
-        correct_tb = HardcodedTiebreaker(tb_name)
-    elif tb_name == 'playoff-':
-        correct_tb = HardcodedTiebreaker(tb_name)
-    else:
-        print("Error ! Unknown tie-breaker")  # should raise an exception
-    return correct_tb

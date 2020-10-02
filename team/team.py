@@ -22,9 +22,8 @@ class Team:
 
             Attributes
             ----------
-            players : list of tuple (Player, str)
-                        The players playing, along with their position on the pitch (most sports assign specific
-                        positions to players)
+            club : Club
+                        The club who the team represents
     """
 
     def __init__(self, club):
@@ -41,5 +40,4 @@ class Team:
            Team
                 The initialized Team, ready to play a match
         """
-        # init with default values or by loading the file
-        pass
+        self.club = club

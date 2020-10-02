@@ -92,12 +92,12 @@ class Competition:
         self.fullClubs = []
         for r in json_cfg['Rounds']:
             if 'League' in r.keys():
-                self.rounds.append(League(r, self.sport, self.isNatImp, self.isTierImp, self.engineCfgPath))
+                self.rounds.append(League(self.sport, r, self.isNatImp, self.isTierImp, self.engineCfgPath))
             elif 'Round' in r.keys():
-                self.rounds.append(Knockout(r, self.sport, self.isNatImp, self.isTierImp, self.engineCfgPath))
+                self.rounds.append(Knockout(self.sport, r, self.isNatImp, self.isTierImp, self.engineCfgPath))
             else:
                 print("Error with the type of round ! Unknown")  # exception !
-            for club in self.rounds[-1].get_clubs():
+            for club in self.rounds[-1].clubs:
                 self.fullClubs.append(club)
 
     def simulate(self):
@@ -111,22 +111,28 @@ class Competition:
         """
         for r in self.rounds:
             self.clubs = r.simulate(self.clubs)
-        try:
-            os.mkdir(self.outputDir_teams)
-            os.chdir(self.outputDir_teams)
-            for c in self.clubs:
-                c.export_to_xml()
-        except FileExistsError:
-            print("Directory already exists; aborting....")
+        if self.outputDir_teams != '':
+            try:
+                os.mkdir(self.outputDir_teams)
+                os.chdir(self.outputDir_teams)
+                for c in self.clubs:
+                    c.export_to_xml()
+            except FileExistsError:
+                print("Directory already exists; aborting....")
 
     def write(self):
         """
               Writes the competition results in the target directory
         """
         try:
+            og_dir = os.getcwd()
             os.mkdir(self.outputDir)
             os.chdir(self.outputDir)
             for r in self.rounds:
                 r.write()
+            for s in self.statisticsComputed:
+                # we should do something here !
+                pass
+            os.chdir(og_dir)
         except FileExistsError:
             print("Directory already exists; aborting....")

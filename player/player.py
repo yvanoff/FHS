@@ -32,16 +32,19 @@ class Player:
         """
            Players will be initialized when a Club is being initialized, using the data read by the Club constructor
            in the XML file defining the club. Only Club should be creating Player objects
+           Same as for the Club class constructor, it won't be defined because it initializes from a file and we don't
+           want to open it twice
 
            Parameters
            ----------
-           player_data : ?
-                       The player's data as read by the Club constructor in the defining XML file.
+           player_data : xml.etree.ElementTree.Element
+                       The player's data node as read by the Club constructor in the defining XML file.
+                       It's the node of the XML tree
 
            Returns
            -------
            Player
                 The initialized Player
         """
-        # init by loading the file
-        pass
+        self.name = ''
+        self.nationality = ''
