@@ -1,0 +1,12 @@
+BVB 2 - 1 Shakhtar
+
+
+
+Goals:
+
+BVB:
+BVB_16 54
+BVB_17 65
+
+Shakhtar:
+Shakhtar_18 45+2

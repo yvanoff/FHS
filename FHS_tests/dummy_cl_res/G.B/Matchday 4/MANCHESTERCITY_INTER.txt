@@ -1,0 +1,17 @@
+ManchesterCity 7 - 1 Inter
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_10 36
+ManchesterCity_18 45+4
+ManchesterCity_19 47
+ManchesterCity_17 60
+ManchesterCity_19 69
+ManchesterCity_17 71
+ManchesterCity_18 90+5
+
+Inter:
+Inter_20 51

@@ -1,0 +1,13 @@
+PSG 2 - 2 Bayern
+
+
+
+Goals:
+
+PSG:
+PSG_16 39
+PSG_20 67
+
+Bayern:
+Bayern_18 29
+Bayern_20 70

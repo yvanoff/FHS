@@ -1,0 +1,12 @@
+Besiktas 1 - 2 Bayern
+
+
+
+Goals:
+
+Besiktas:
+Besiktas_18 12
+
+Bayern:
+Bayern_10 21
+Bayern_17 37

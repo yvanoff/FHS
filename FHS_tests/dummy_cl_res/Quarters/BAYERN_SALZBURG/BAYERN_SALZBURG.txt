@@ -1,0 +1,12 @@
+Bayern 1 - 2 Salzburg
+
+
+
+Goals:
+
+Bayern:
+Bayern_18 9
+
+Salzburg:
+Salzburg_20 60
+Salzburg_20 79

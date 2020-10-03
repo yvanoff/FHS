@@ -60,6 +60,8 @@ class Club:
             -------
             export_to_xml : str -> None
                         Writes the team's data to an XML file, path given in attribute
+            reset_matches_data : None -> None
+                        Resets the nbWin, nbDrawn, nbLosses attributes to 0
             pick_team : None -> Team
                         Picks a Team from the Club's players to play a match
             increase_won : int -> None
@@ -68,8 +70,6 @@ class Club:
                         Increases nbDrawn by the quantity given in attribute
             increase_losses : int -> None
                         Increases nbLosses by the quantity given in attribute
-            reset_matches_data : None -> None
-                        Resets the nbWin, nbDrawn, nbLosses attributes to 0
             back_up_stats : None -> None
                         Saves the current stats in the back-up list of dicts
             restore_last_backup : None -> None
@@ -133,6 +133,13 @@ class Club:
            str
                        The string containing the club's relevant data for its ranking. Standardize the format
                        for your own sport
+        """
+        pass
+
+    def reset_matches_data(self):
+        """
+           Resets the club's stats (points, number of wins/draws/losses, and anything specific to the sport implemented)
+           to 0
         """
         pass
 

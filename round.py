@@ -152,7 +152,9 @@ class Round:
                 List of the pairings, which consists in list of Club
         """
         # ADD NATIONALITY SUPPORT !!!!
-        draw = [[]] * nb_groups
+        draw = []
+        for i in range(nb_groups):
+            draw.append([])
         pots = []
         clubs_by_pot = {}
         for c in clubs:
@@ -200,7 +202,8 @@ class Round:
                 The clubs loaded and ready to be used by the round
         """
         clubs = []
-        for file in os.scandir(data_path):
-            if file.name.split(".")[1] == "xml":
-                clubs.append(choose_correct_club(self.sport, file.path))
+        if data_path != '':
+            for file in os.scandir(data_path):
+                if file.name.split(".")[1] == "xml":
+                    clubs.append(choose_correct_club(self.sport, file.path))
         return clubs

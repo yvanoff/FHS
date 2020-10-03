@@ -73,14 +73,14 @@ class FootballClub(Club):
             -------
             export_to_xml : str -> None
                         Writes the team's data to an XML file, path given in attribute
+            reset_matches_data : None -> None
+                        Resets the nbWin, nbDrawn, nbLosses, points, goalsScored, goalsConceded attributes to 0
             increase_won : int -> None
                         Increases nbWin by the quantity given in attribute
             increase_drawn : int -> None
                         Increases nbDrawn by the quantity given in attribute
             increase_losses : int -> None
                         Increases nbLosses by the quantity given in attribute
-            reset_matches_data : None -> None
-                        Resets the nbWin, nbDrawn, nbLosses attributes to 0
             back_up_stats : None -> None
                         Saves the current stats in the back-up list of dicts
             restore_last_backup : None -> None
@@ -236,6 +236,18 @@ class FootballClub(Club):
                                      str(self.goalsScored)+"GS, "+str(self.goalsConceded) +\
                                      "GC, Diff:"+str(self.goalsScored-self.goalsConceded)
         return ranking_string
+
+    def reset_matches_data(self):
+        """
+           Resets the club's stats (points, number of wins/draws/losses, number of goals scored/conceded) to 0
+        """
+        self.points = 0
+        self.nbWin = 0
+        self.nbDrawn = 0
+        self.nbLosses = 0
+        self.goalsScored = 0
+        self.goalsConceded = 0
+        self.awayGoalsScored = 0
 
 
 class Tactic:

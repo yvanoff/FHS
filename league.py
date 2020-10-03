@@ -130,7 +130,7 @@ class League(Round):
                         match_engine.simulate_match()
                         res = match_engine.result
                         matchday_results.append(res)
-                        res.update_club_stats(self.points)
+                        res.update_club_stats(points=self.points, neutral_ground=self.neutralGround)
                         res.update_player_stats()
                 group_results.append(matchday_results)
             league_table = self._make_table(g, 0)
@@ -138,10 +138,9 @@ class League(Round):
             for c in range(self.nbAdvancing):
                 qualified_clubs.append(league_table[c])
                 if self.potForAdvancing:
-                    league_table[c].updatePot(c)
+                    league_table[c].pot = c
                 else:
-                    pass
-                    # league_table[c].resetPot()
+                    league_table[c].pot = 0
             self.results.append(group_results)
         return qualified_clubs
 

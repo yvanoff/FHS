@@ -45,7 +45,7 @@ write_result
         """
         self.score = {home_team: 0, away_team: 0}
 
-    def update_club_stats(self, points=None):
+    def update_club_stats(self, points=None, neutral_ground=False):
         """
            Updates both clubs's stats with the result's data, including an update to their point total according to
            the parameter
@@ -55,6 +55,9 @@ write_result
            points : list of Int
                        The points attributed for a win, a draw and a loss respectively. Used to update the clubs's
                        points total
+           neutral_ground : bool
+                        Indicates if the match took place on neutral ground
+                        (some stats are related to playing home/away)
         """
         pass
 
@@ -64,8 +67,18 @@ write_result
         """
         pass
 
-    def write(self, path=None):
+    def write(self, path=None, prev_m=None):
         """
            Writes the match's result, either in the current directory or in a specified path
+
+           Parameters
+           ----------
+           path : str
+                        The path where the result should be written. If not specified the file is written in the
+                        current directory
+           prev_m : list of Result
+                        A list of previous results we want to write because they give useful information (for example
+                        if two teams play each other 7 times, with the team with the most wins qualifying, it's useful
+                        to know the result of previous matches when looking at the result of a match)
         """
         pass

@@ -1,0 +1,12 @@
+ManchesterCity 2 - 1 Liverpool
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_19 24
+ManchesterCity_17 60 (pen)
+
+Liverpool:
+Liverpool_21 17 (pen)

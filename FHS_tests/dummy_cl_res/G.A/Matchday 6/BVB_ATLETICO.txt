@@ -1,0 +1,13 @@
+BVB 3 - 1 Atletico
+
+
+
+Goals:
+
+BVB:
+BVB_21 3
+BVB_17 38
+BVB_20 51
+
+Atletico:
+Atletico_10 45+4

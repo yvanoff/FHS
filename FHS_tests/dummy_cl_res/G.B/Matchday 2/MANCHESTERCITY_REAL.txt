@@ -1,0 +1,12 @@
+ManchesterCity 2 - 1 Real
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_16 50
+ManchesterCity_18 60
+
+Real:
+Real_17 46

@@ -84,7 +84,7 @@ write_results
         self.score[scoring_team] += 1
         self.goals[scoring_team].append(Goal(goalscorer, is_og, is_pen, time, added_time))
 
-    def update_club_stats(self, points=None):
+    def update_club_stats(self, points=None, neutral_ground=False):
         """
            Updates both clubs's stats with the result's data, including an update to their point total according to
            the parameter
@@ -94,6 +94,9 @@ write_results
            points : list of Int
                        The points attributed for a win, a draw and a loss respectively. Used to update the clubs's
                        points total
+           neutral_ground : bool
+                        Indicates if the match took place on neutral ground
+                        (some stats are related to playing home/away)
         """
         if points is None:
             points = [1, 0, 0]
@@ -117,6 +120,8 @@ write_results
         team1.club.goalsConceded += self.score[team2]
         team2.club.goalsScored += self.score[team2]
         team2.club.goalsConceded += self.score[team1]
+        if not neutral_ground:
+            team2.club.awayGoalsScored += self.score[team2]
 
     def update_player_stats(self):
         """
@@ -127,16 +132,29 @@ write_results
                 if not g.isOG:
                     g.goalScorer.goalsScored += 1
 
-    def write(self, path=None):
+    def write(self, path=None, prev_m=None):
         """
            Writes the match's result, either in the current directory or in a specified path
+
+           Parameters
+           ----------
+           path : str
+                        The path where the result should be written. If not specified the file is written in the
+                        current directory
+           prev_m : list of Result
+                        A list of previous results we want to write because they give useful information (for example
+                        if two teams play each other 7 times, with the team with the most wins qualifying, it's useful
+                        to know the result of previous matches when looking at the result of a match)
         """
         if path is not None:
             os.chdir(path)
         team_names = []
         for t in self.goals.keys():
             team_names.append((t, t.club.name))
-        filename = team_names[0][1].upper()+"_"+team_names[1][1].upper()
+        prev_str = ""
+        if prev_m:
+            prev_str = "_"+str(len(prev_m)+1)+"_"
+        filename = team_names[0][1].upper()+"_"+team_names[1][1].upper()+prev_str+".txt"
         file = open(filename, "w+")
         file.write(team_names[0][1]+" "+str(self.score[team_names[0][0]])+" - " +
                    str(self.score[team_names[1][0]])+" "+team_names[1][1])
@@ -165,6 +183,13 @@ write_results
             elif g.isPen:  # a goal can't be both a goal scored on a penalty kick and an own goal !
                 basic_goal = basic_goal+" (pen)"
             file.write(basic_goal+"\n")
+        if prev_m:
+            file.write("\n\n\n")
+            for i in range(len(prev_m)):
+                leg_ht, leg_at = prev_m[i].score.keys()
+                str_score = " "+leg_ht.club.name+" "+str(prev_m[i].score[leg_ht])+" - " +\
+                    str(prev_m[i].score[leg_at])+" "+leg_at.club.name
+                file.write("Leg "+str(i+1)+" result:"+str_score+"\n")
         file.close()
 
 

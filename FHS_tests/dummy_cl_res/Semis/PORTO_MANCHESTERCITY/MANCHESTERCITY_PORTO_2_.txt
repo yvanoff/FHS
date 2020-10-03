@@ -1,0 +1,20 @@
+ManchesterCity 5 - 2 Porto
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_19 7
+ManchesterCity_13 18
+ManchesterCity_20 45+5
+ManchesterCity_20 89
+ManchesterCity_20 90+5
+
+Porto:
+Porto_15 10
+Porto_20 34
+
+
+
+Leg 1 result: Porto 1 - 1 ManchesterCity

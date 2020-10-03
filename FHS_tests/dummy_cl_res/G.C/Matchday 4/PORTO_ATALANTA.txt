@@ -1,0 +1,14 @@
+Porto 4 - 1 Atalanta
+
+
+
+Goals:
+
+Porto:
+Porto_21 3
+Porto_14 23
+Porto_18 36
+Porto_21 88
+
+Atalanta:
+Atalanta_18 54

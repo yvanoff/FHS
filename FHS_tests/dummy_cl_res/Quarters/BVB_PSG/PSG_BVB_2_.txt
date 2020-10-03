@@ -1,0 +1,18 @@
+PSG 3 - 2 BVB
+
+
+
+Goals:
+
+PSG:
+PSG_21 7
+PSG_19 29
+PSG_21 86
+
+BVB:
+BVB_12 12
+BVB_17 49
+
+
+
+Leg 1 result: BVB 0 - 1 PSG

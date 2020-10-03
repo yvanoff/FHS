@@ -1,0 +1,48 @@
+{
+  "Name" : "Dummy CL",
+  "Output_directory" : "/home/yvanoff/FHS_tests/dummy_cl_res",
+  "Output_directory_for_qualified_teams_data" : "",
+  "Is_nationality_important" : false,
+  "Is_club_level_important" : false,
+  "Sport": "foot",
+  "Statistics" : [],
+  "Rounds" : [
+  {
+    "Clubs_data" : "/home/yvanoff/FHS_tests/dummy_cl_teams",
+    "Names" : ["G.A","G.B","G.C","G.D"],
+    "League" :
+    {
+
+      "Nb_groups": 4,
+      "Tie_breakers": [],
+      "Table_each_round": false,
+      "Points_per_result": [3,1,0],
+      "Nb_qualified": 2,
+      "Pots_for_qualified_teams": true
+    },
+    "Nb_times_teams_play_each_other": 2,
+    "Matches_on_neutral_ground": false
+  },
+  {
+    "Clubs_data" : "",
+    "Names" : ["Quarters","Semis"],
+    "Round" :
+    {
+      "Play_x_rounds": 2,
+      "Tie_breakers" : []
+    },
+    "Nb_times_teams_play_each_other": 2,
+    "Matches_on_neutral_ground": false
+  },
+  {
+    "Clubs_data" : "",
+    "Names" : ["Final"],
+    "Round" :
+    {
+      "Play_x_rounds": 1,
+      "Tie_breakers" : []
+    },
+    "Nb_times_teams_play_each_other": 1,
+    "Matches_on_neutral_ground": true
+  }]
+}

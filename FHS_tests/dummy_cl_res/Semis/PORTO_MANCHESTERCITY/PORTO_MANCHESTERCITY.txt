@@ -1,0 +1,11 @@
+Porto 1 - 1 ManchesterCity
+
+
+
+Goals:
+
+Porto:
+Porto_21 7
+
+ManchesterCity:
+ManchesterCity_17 37

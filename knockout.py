@@ -25,6 +25,7 @@ from round import Round
 from club.club import Bye
 from engine.selection import choose_correct_engine
 import os
+import random as rnd
 
 
 class Knockout(Round):
@@ -64,11 +65,11 @@ class Knockout(Round):
                 The initialized Knockout object
         """
         super().__init__(sport, round_parameters, nat, tier, engine_cfg_path)
-        self.nbRounds = round_parameters['Round']['Play_x_rounds'] # Number of consecutive rounds to be played
+        self.nbRounds = round_parameters['Round']['Play_x_rounds']  # Number of consecutive rounds to be played
         # extra time type to use if teams are tied
         # possible values are:
         # - "" for no extra time
-        # - "normal" for the regular verison
+        # - "normal" for the regular version
         # - "gg" for golden goal
         # - "sg" for silver goal
 
@@ -107,7 +108,7 @@ class Knockout(Round):
         self.results = []
         for r in range(self.nbRounds):
             res_round = []
-            match_list = self._draw_round(self.clubs, (len(self.clubs) / +1) / 2, self.isNatImp, self.isTierImp)
+            match_list = self._draw_round(self.clubs, (len(self.clubs)+1) // 2, self.isNatImp, self.isTierImp)
             qualified_clubs = []
             for m in match_list:
                 # s'arrêter si quelqu'un gagne (floor(nb_matches_max/2))+1 matches
@@ -117,18 +118,20 @@ class Knockout(Round):
                 # MAIS ON S'ARRETE PAS SI UNE EQUIPE A GAGNEE QUE L'ALLER
                 if not ((type(m[0]) is Bye) or (type(m[1]) is Bye)):
                     list_conf = []
+                    m[0].reset_matches_data()
+                    m[1].reset_matches_data()
                     for c in range(self.nbConfrontations):
-                        if (c % 2 + self.nbConfrontations) == 1:
+                        if (c % 2) == 1:
                             home_t, away_t = m
                         else:
                             away_t, home_t = m
                         match_engine = choose_correct_engine(self.sport, self.engineCfgPath, home_t, away_t,
                                                              self.neutralGround)
-                        match_engine.simulateMatch()
+                        match_engine.simulate_match()
                         res = match_engine.result
                         list_conf.append(res)
-                        res.updateClubStats()
-                        res.updatePlayerStats()
+                        res.update_club_stats(neutral_ground=self.neutralGround)
+                        res.update_player_stats()
                     winner = self._determine_tie_winner(m)
                     res_round.append(list_conf)
                     qualified_clubs.append(winner)
@@ -145,7 +148,7 @@ class Knockout(Round):
             # and then the list of teams is replaced by qualified_teams for the next
             self.results.append(res_round)
             for qt in qualified_clubs:
-                qt.resetPot()
+                qt.pot = 0
             self.clubs = qualified_clubs
         return qualified_clubs
 
@@ -162,11 +165,12 @@ class Knockout(Round):
                 for list_conf in self.results[i_n]:
                     try:
                         new_og_dir = os.getcwd()
-                        os.mkdir(list_conf[0].home.upper()+"_"+list_conf[0].away.upper())
-                        os.chdir(list_conf[0].home.upper()+"_"+list_conf[0].away.upper())
+                        write_ht, write_at = list_conf[0].score.keys()
+                        os.mkdir(write_ht.club.name.upper()+"_"+write_at.club.name.upper())
+                        os.chdir(write_ht.club.name.upper()+"_"+write_at.club.name.upper())
                         for conf_i in range(len(list_conf)):
                             conf = list_conf[conf_i]
-                            conf.write(list_conf[:conf_i])
+                            conf.write(prev_m=list_conf[:conf_i])
                         os.chdir(new_og_dir)
                     except FileExistsError:
                         print("File already exists; aborting....")
@@ -192,12 +196,30 @@ class Knockout(Round):
         # note: si on fait un playoff, mais le nombre de confrontations est impair
         # jouer le premier playoff pas sur terrain neutre mais chez l'équipe qui a le moins reçu
         winner = None
-        i = 0
-        while (winner is None) or (i < len(self.tieBreakers)):
-            ranking = self.tieBreakers[i].tieBreak(clubs)
-            if not isinstance(ranking[0], list):
-                winner = ranking[0]
-            else:
+        if True:
+            if clubs[0].nbWin > clubs[1].nbWin:
                 winner = clubs[0]
-            i += 1
+            elif clubs[0].nbWin < clubs[1].nbWin:
+                winner = clubs[1]
+            else:
+                if (clubs[0].goalsScored - clubs[0].goalsConceded) > (clubs[1].goalsScored - clubs[1].goalsConceded):
+                    winner = clubs[0]
+                elif (clubs[0].goalsScored - clubs[0].goalsConceded) < (clubs[1].goalsScored - clubs[1].goalsConceded):
+                    winner = clubs[1]
+                else:
+                    if clubs[0].awayGoalsScored > clubs[1].awayGoalsScored:
+                        winner = clubs[0]
+                    elif clubs[0].awayGoalsScored < clubs[1].awayGoalsScored:
+                        winner = clubs[1]
+                    else:
+                        winner = rnd.choice(clubs)
+        else:
+            i = 0
+            while (winner is None) or (i < len(self.tieBreakers)):
+                ranking = self.tieBreakers[i].tieBreak(clubs)
+                if not isinstance(ranking[0], list):
+                    winner = ranking[0]
+                else:
+                    winner = clubs[0]
+                i += 1
         return winner

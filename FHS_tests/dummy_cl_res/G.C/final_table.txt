@@ -1,0 +1,6 @@
+Final table for G.C
+
+1. Porto, 0 pts, 0P:0W/0D/0L, 0GS, 0GC, Diff:0
+2. Salzburg, 0 pts, 0P:0W/0D/0L, 0GS, 0GC, Diff:0
+3. Atalanta, 8 pts, 6P:2W/2D/2L, 9GS, 9GC, Diff:0
+4. Olympiakos, 2 pts, 6P:0W/2D/4L, 4GS, 16GC, Diff:-12

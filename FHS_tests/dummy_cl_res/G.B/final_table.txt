@@ -1,0 +1,6 @@
+Final table for G.B
+
+1. ManchesterCity, 0 pts, 0P:0W/0D/0L, 0GS, 0GC, Diff:0
+2. Liverpool, 0 pts, 0P:0W/0D/0L, 0GS, 0GC, Diff:0
+3. Real, 6 pts, 6P:2W/0D/4L, 13GS, 14GC, Diff:-1
+4. Inter, 4 pts, 6P:1W/1D/4L, 6GS, 18GC, Diff:-12

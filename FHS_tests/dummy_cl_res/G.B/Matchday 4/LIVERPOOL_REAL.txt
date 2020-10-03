@@ -1,0 +1,17 @@
+Liverpool 5 - 3 Real
+
+
+
+Goals:
+
+Liverpool:
+Liverpool_18 1
+Liverpool_16 15
+Liverpool_16 31
+Liverpool_18 85
+Liverpool_16 86
+
+Real:
+Real_19 45+2
+Real_18 72 (pen)
+Real_20 84

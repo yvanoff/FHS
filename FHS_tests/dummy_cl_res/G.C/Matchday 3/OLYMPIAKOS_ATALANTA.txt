@@ -1,0 +1,15 @@
+Olympiakos 1 - 5 Atalanta
+
+
+
+Goals:
+
+Olympiakos:
+Olympiakos_16 90
+
+Atalanta:
+Atalanta_19 30
+Atalanta_17 48
+Atalanta_16 69
+Atalanta_18 80
+Atalanta_18 87
