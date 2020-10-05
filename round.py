@@ -91,6 +91,7 @@ class Round:
            Round
                 The initialized Round object
         """
+        # test for the dict keys
         self.isNatImp = nat
         self.isTierImp = tier
         self.engineCfgPath = engine_cfg_path
@@ -125,7 +126,8 @@ class Round:
         """
         pass
 
-    def _draw_round(self, clubs, nb_groups, nat, tier=False):
+    def _draw_round(self, nb_groups):
+        # use self instead of arguments
         """
            Draw teams together for a Round
 
@@ -141,10 +143,6 @@ class Round:
                 List of the Club which are playing
             nb_groups : int
                 The number of pairings to be done
-            nat : bool
-                Flag indicating whether or not teams of a same nationality can play each other
-            tier : bool
-                Flag indicating if lower tiered clubs should play at home against higher tier clubs or not
 
            Returns
            -------
@@ -152,17 +150,24 @@ class Round:
                 List of the pairings, which consists in list of Club
         """
         # ADD NATIONALITY SUPPORT !!!!
+        # for it and same group no draw support:
+        # make a list of possible opponents for every team
+        # a draw is accepted only if the drawn team is in the accepted opponents of every team already drawn with it
+        # and then we also only accept it the teams yet to be drawn still have possible opponents if we draw this one
+        # here
         draw = []
         for i in range(nb_groups):
             draw.append([])
         pots = []
         clubs_by_pot = {}
-        for c in clubs:
+        for c in self.clubs:
             if c.pot not in pots:
                 pots.append(c.pot)
                 clubs_by_pot[c.pot] = [c]
             else:
                 clubs_by_pot[c.pot].append(c)
+            if c.exit_group != -1:
+                pass  # we have groups to handle
         pots = sorted(pots)
         if pots[0] == 0:
             pots.append(pots.pop(0))
@@ -176,7 +181,7 @@ class Round:
                 current_group += 1
                 if current_group == nb_groups:
                     current_group = 0
-        if tier:
+        if self.isTierImp:
             for i in range(len(draw)):
                 if (len(draw[i]) == 2) and (draw[i][0].tier < draw[i][1].tier):
                     draw[i] = [draw[i][1], draw[i][0]]

@@ -62,22 +62,10 @@ class Club:
                         Writes the team's data to an XML file, path given in attribute
             reset_matches_data : None -> None
                         Resets the nbWin, nbDrawn, nbLosses attributes to 0
-            pick_team : None -> Team
-                        Picks a Team from the Club's players to play a match
-            increase_won : int -> None
-                        Increases nbWin by the quantity given in attribute
-            increase_drawn : int -> None
-                        Increases nbDrawn by the quantity given in attribute
-            increase_losses : int -> None
-                        Increases nbLosses by the quantity given in attribute
-            back_up_stats : None -> None
-                        Saves the current stats in the back-up list of dicts
+            backup_data : None -> None
+                        Stores the current stats in a dict in the BackUps attribute
             restore_last_backup : None -> None
-                        Resets the stats to their value in the latest back-up dict
-            get_pot : None -> Int
-                        Returns the Team's pot
-            get_tier : None -> Int
-                        Returns the Team's tier
+                        Restores the last backup in the BackUps attribute
             app_result : Result -> None
                         Adds a Result to the matchList
     """

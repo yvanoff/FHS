@@ -16,6 +16,7 @@ of each group progressing. This is a League kind of Round
 
 from tiebreaker.tiebreakers import HardcodedTiebreaker
 from tiebreaker.selection import choose_correct_tb
+from result.result import ByeResult
 from round import Round
 from club.club import Bye
 from engine.selection import choose_correct_engine
@@ -113,14 +114,14 @@ class League(Round):
         for ac in list_added_clubs:
             self.clubs.append(ac)
         qualified_clubs = []
-        groups = self._draw_round(self.clubs, self.nbGroups, self.isNatImp)
+        groups = self._draw_round(self.nbGroups)
 
         # for each group we make a schedule and play each match in it
         # after each match we update the stats which need updating
         # and then we make the table for each group and save the teams qualified
         for g in groups:
             group_results = []
-            schedule = self._make_schedule(g, self.nbConfrontations)
+            schedule = self._make_schedule(g)
             for matchday in schedule:
                 matchday_results = []
                 for match in matchday:
@@ -132,13 +133,18 @@ class League(Round):
                         matchday_results.append(res)
                         res.update_club_stats(points=self.points, neutral_ground=self.neutralGround)
                         res.update_player_stats()
+                    elif type(match[0]) is Bye:
+                        matchday_results.append(ByeResult(match[1], match[1].name+" is not playing this matchday"))
+                    else:
+                        matchday_results.append(ByeResult(match[0], match[0].name + " is not playing this matchday"))
                 group_results.append(matchday_results)
             league_table = self._make_table(g, 0)
             self.table.append(league_table)
             for c in range(self.nbAdvancing):
                 qualified_clubs.append(league_table[c])
+                league_table[c].exit_group = c
                 if self.potForAdvancing:
-                    league_table[c].pot = c
+                    league_table[c].pot = c+1
                 else:
                     league_table[c].pot = 0
             self.results.append(group_results)
@@ -175,13 +181,19 @@ class League(Round):
                         print("File already exists; aborting....")
                 table_file = open("final_table.txt", "w+")
                 table_file.write("Final table for "+n+"\n\n")
+                cnt_bye = 0
                 for club_i in range(len(self.table[i_n])):
-                    table_file.write(str(club_i+1)+". "+self.table[i_n][club_i].write_table_data()+"\n")
+                    if not isinstance(self.table[i_n][club_i], Bye):
+                        table_file.write(str(club_i+1-cnt_bye)+". "+self.table[i_n][club_i].write_table_data()+"\n")
+                    else:
+                        cnt_bye += 1
                 os.chdir(og_dir)
             except FileExistsError:
                 print("File already exists; aborting....")
 
-    def _make_schedule(self, group, nb_confrontations):
+    def _make_schedule(self, group):
+        # use self instead of arguments
+        # matchday 1 return
         """
            Makes a schedule for a group of Team
 
@@ -189,8 +201,6 @@ class League(Round):
            ----------
            group : list of Club
                 List of clubs which need a schedule
-            nb_confrontations : int
-                The number of times teams play each other
 
            Returns
            -------
@@ -223,12 +233,12 @@ class League(Round):
             schedule.append(matches_list)
             group.insert(1, group.pop())
 
-        for i in range(nb_confrontations-1):
+        for i in range(self.nbConfrontations-1):
             schedule_added = []
             for matchday in schedule:
                 reversed_matchday = []
                 for m in matchday:
-                    reversed_matchday.append((m[1],m[0]))
+                    reversed_matchday.append((m[1], m[0]))
                 schedule_added.append(reversed_matchday)
             for j in schedule_added:
                 schedule.append(j)
@@ -243,6 +253,8 @@ class League(Round):
            ----------
            clubs : list of Club
                 Lis of Club to rank
+            tiebreaker_used :
+                The tiebreaker used to make a table
 
            Returns
            -------
@@ -256,7 +268,8 @@ class League(Round):
             final_table = []
             points_tuple = []
             for club in clubs:
-                points_tuple.append((club.points, club))
+                if not isinstance(club, Bye):
+                    points_tuple.append((club.points, club))
             points_tuple = sorted(points_tuple, key=self._first, reverse=True)
             for c in points_tuple:
                 final_table.append(c[1])

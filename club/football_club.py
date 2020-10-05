@@ -40,6 +40,9 @@ class FootballClub(Club):
                         Player
             pot : int
                         The club's pot (used for the draw in some competitions, leave to 0 if not used)
+            exit_group : int
+                        In Football competitions group stages followed by a knockout stage is commonplace. In such
+                        cases football clubs coming from the same group shouldn't play against each other straight away
             nbWin : int
                         Number of matches won by the club
             nbDrawn : int
@@ -75,20 +78,10 @@ class FootballClub(Club):
                         Writes the team's data to an XML file, path given in attribute
             reset_matches_data : None -> None
                         Resets the nbWin, nbDrawn, nbLosses, points, goalsScored, goalsConceded attributes to 0
-            increase_won : int -> None
-                        Increases nbWin by the quantity given in attribute
-            increase_drawn : int -> None
-                        Increases nbDrawn by the quantity given in attribute
-            increase_losses : int -> None
-                        Increases nbLosses by the quantity given in attribute
-            back_up_stats : None -> None
-                        Saves the current stats in the back-up list of dicts
+            backup_data : None -> None
+                        Stores the current stats in a dict in the BackUps attribute
             restore_last_backup : None -> None
-                        Resets the stats to their value in the latest back-up dict
-            get_pot : None -> Int
-                        Returns the Team's pot
-            get_tier : None -> Int
-                        Returns the Team's tier
+                        Restores the last backup in the BackUps attribute
             app_result : FootballResult -> None
                         Adds a FootballResult (it's a FootballClub) to the matchList
             + methods to handle the goals scored
@@ -113,6 +106,7 @@ class FootballClub(Club):
         self.goalsScored = 0
         self.goalsConceded = 0
         self.awayGoalsScored = 0
+        self.exit_group = -1
         self.tactics = []
 
         club_tree = ET.parse(club_data)
@@ -158,6 +152,8 @@ class FootballClub(Club):
                 self.tactics.append(Tactic(df, md, fw, w))
             elif e.tag == 'player':
                 self.players.append(FootballPlayer(e))
+            elif e.tag == 'exit_group':
+                self.exit_group = int(e.text)
             else:
                 print("Unknown data in the Club data file ! Ignoring....")
 
@@ -230,11 +226,11 @@ class FootballClub(Club):
                        The string containing the club's relevant data for its ranking. Standardize the format
                        for your own sport
         """
-        ranking_string = self.name + ", " + str(self.points) + " pts, " +\
-                                     str(self.nbWin + self.nbDrawn + self.nbLosses) + "P:" +\
-                                     str(self.nbWin) + "W/" + str(self.nbDrawn) + "D/" + str(self.nbLosses) + "L, " +\
-                                     str(self.goalsScored)+"GS, "+str(self.goalsConceded) +\
-                                     "GC, Diff:"+str(self.goalsScored-self.goalsConceded)
+        ranking_string = self.name + ", " + str(self.points) + " pts, " + \
+                         str(self.nbWin + self.nbDrawn + self.nbLosses) + "P:" + \
+                         str(self.nbWin) + "W/" + str(self.nbDrawn) + "D/" + str(self.nbLosses) + "L, " + \
+                         str(self.goalsScored) + "GS, " + str(self.goalsConceded) + \
+                         "GC, Diff:" + str(self.goalsScored - self.goalsConceded)
         return ranking_string
 
     def reset_matches_data(self):
@@ -248,6 +244,31 @@ class FootballClub(Club):
         self.goalsScored = 0
         self.goalsConceded = 0
         self.awayGoalsScored = 0
+
+    def backup_data(self):
+        """
+           Saves the club's stats in a backup dict in backUps
+        """
+        self.backUps.append({'points': self.points,
+                             'won': self.nbWin,
+                             'drawn': self.nbDrawn,
+                             'lost': self.nbLosses,
+                             'scored': self.goalsScored,
+                             'conceded': self.goalsConceded,
+                             'scored_away': self.awayGoalsScored})
+
+    def restore_last_backup(self):
+        """
+           Restores the latest back-uped data in backUps
+        """
+        last_backup = self.backUps.pop()
+        self.points = last_backup['points']
+        self.nbWin = last_backup['won']
+        self.nbDrawn = last_backup['drawn']
+        self.nbLosses = last_backup['lost']
+        self.goalsScored = last_backup['scored']
+        self.goalsConceded = last_backup['conceded']
+        self.awayGoalsScored = last_backup['scored_away']
 
 
 class Tactic:

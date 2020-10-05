@@ -5,8 +5,12 @@ File defining a generic Result class
 
 The Result class define the result of a sport match. Override it with your own subclass when adding in a new sport
 
+It also adds a generic ByeResult class which defines a result in case a team is awarded a bye. Should work for any wsport
+
 @author: alexa
 """
+
+import os
 
 
 class Result:
@@ -21,9 +25,16 @@ class Result:
                         scored by the home team and n by the away team (however, there are some caveats - example:
                         tennis, or volley where it kinda works but kinda not - so this might be changed in the future)
                         The team is the key that allows you to find its score
-update_club_stats: updates Team's stats and add to their results !
-write_result
 
+            Methods
+            ----------
+            update_club_stats : list of int -> bool -> None
+                        Updates both clubs's stats with the result's data, including an update to their point total
+                        according to the parameter
+            update_player_stats : None -> None
+                        Updates the players's stats with the result's data (goals scored, try scored, etc...)
+            write : str -> list of Result -> None
+                        Writes the match's result, either in the current directory or in a specified path
     """
 
     def __init__(self, home_team, away_team):
@@ -82,3 +93,53 @@ write_result
                         to know the result of previous matches when looking at the result of a match)
         """
         pass
+
+
+class ByeResult:
+    """
+            Defines a Result when a team is awarded a Bye, to avoid Byes simply not appearing in the written record
+            of the competition
+
+            Attributes
+            ----------
+            club : Club
+                        The club which is awarded the Bye
+            message : str
+                        The message to write in the competition's record
+
+            Methods
+            ----------
+            write : str -> None
+                        Writes the message in a file located in the specified path or in the current directory
+    """
+    def __init__(self, club, message):
+        """
+           Creates the ByeResult by initializing its message
+
+           Parameters
+           ----------
+           team : Team
+                        The team which is awarded the Bye
+           message : str
+                        The message to write to record the Bye
+        """
+        self.message = message
+        self.club = club
+
+    def write(self, path=None):
+        """
+           Writes the bye's record
+
+           Parameters
+           ----------
+           path : str
+                        The path where the bye should be written. If not specified the file is written in the
+                        current directory
+        """
+        if path is None:
+            path = '.'
+        og_dir = os.getcwd()
+        os.chdir(path)
+        bye_res = open(self.club.name.upper()+".txt", "w+")
+        bye_res.write(self.message)
+        bye_res.close()
