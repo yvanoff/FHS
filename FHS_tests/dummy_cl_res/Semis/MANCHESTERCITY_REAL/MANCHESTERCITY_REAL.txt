@@ -1,0 +1,16 @@
+ManchesterCity (dummy country) 5 - 2 Real (dummy country)
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_21 36 (pen)
+ManchesterCity_21 47 (pen)
+ManchesterCity_13 58
+ManchesterCity_20 80
+Real_20 81 o.g.
+
+Real:
+Real_21 30
+Real_16 90+1

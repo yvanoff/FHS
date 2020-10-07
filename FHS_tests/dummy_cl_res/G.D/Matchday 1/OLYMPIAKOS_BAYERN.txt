@@ -1,0 +1,12 @@
+Olympiakos (dummy country) 0 - 4 Bayern (dummy country)
+
+
+
+Goals:
+
+
+Bayern:
+Bayern_20 4
+Bayern_4 11
+Bayern_20 34
+Bayern_17 53

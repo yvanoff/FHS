@@ -1,0 +1,12 @@
+Liverpool (dummy country) 2 - 1 Shakhtar (dummy country)
+
+
+
+Goals:
+
+Liverpool:
+Liverpool_19 45+3
+Liverpool_18 61
+
+Shakhtar:
+Shakhtar_10 38

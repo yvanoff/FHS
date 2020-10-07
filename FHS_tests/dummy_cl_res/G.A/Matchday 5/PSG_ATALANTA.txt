@@ -1,0 +1,11 @@
+PSG (dummy country) 4 - 0 Atalanta (dummy country)
+
+
+
+Goals:
+
+PSG:
+PSG_18 39
+PSG_17 43
+PSG_18 50
+PSG_17 72

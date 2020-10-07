@@ -1,0 +1,14 @@
+Porto (dummy country) 2 - 3 BVB (dummy country)
+
+
+
+Goals:
+
+Porto:
+Porto_16 27
+Porto_19 83 (pen)
+
+BVB:
+BVB_12 9
+BVB_12 75
+BVB_20 76

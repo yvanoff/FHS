@@ -33,8 +33,9 @@ class Result:
                         according to the parameter
             update_player_stats : None -> None
                         Updates the players's stats with the result's data (goals scored, try scored, etc...)
-            write : str -> list of Result -> None
-                        Writes the match's result, either in the current directory or in a specified path
+            write : bool -> bool -> str -> list of Result -> None
+                        Writes the match's result, either in the current directory or in a specified path. The clubs's
+                        nationalities and tiers are written or not depending on the booleans parameters
     """
 
     def __init__(self, home_team, away_team):
@@ -78,12 +79,16 @@ class Result:
         """
         pass
 
-    def write(self, path=None, prev_m=None):
+    def write(self, nat, tier, path=None, prev_m=None):
         """
            Writes the match's result, either in the current directory or in a specified path
 
            Parameters
            ----------
+           nat : bool
+                        Should the clubs's nationalities feature in the written report
+           tier : bool
+                        Should the club's tiers feature in the report
            path : str
                         The path where the result should be written. If not specified the file is written in the
                         current directory

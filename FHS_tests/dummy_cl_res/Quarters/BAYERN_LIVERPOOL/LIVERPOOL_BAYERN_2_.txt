@@ -1,0 +1,18 @@
+Liverpool (dummy country) 3 - 2 Bayern (dummy country)
+
+
+
+Goals:
+
+Liverpool:
+Liverpool_12 6
+Liverpool_19 17
+Liverpool_19 24
+
+Bayern:
+Bayern_21 21
+Bayern_20 64
+
+
+
+Leg 1 result: Bayern 1 - 1 Liverpool

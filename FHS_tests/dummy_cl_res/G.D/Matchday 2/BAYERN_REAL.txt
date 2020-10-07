@@ -1,0 +1,10 @@
+Bayern (dummy country) 3 - 0 Real (dummy country)
+
+
+
+Goals:
+
+Bayern:
+Bayern_19 25
+Bayern_16 69
+Bayern_16 90+2

@@ -41,8 +41,17 @@ class ConfGoalDifference(GoalDifference):
                     If some teams are still tied after applying the tie breaking criteria they'll be grouped in a list
                     inside the list
     """
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, cur_round):
+        super().__init__(name, cur_round)
 
     def tie_break(self, teams):
-        pass
+        for t in teams:
+            t.reset_matches_data()
+        for i in self.round_applied.results:
+            for j in i:
+                for match in j:
+                    home, away = match.score.keys()
+                    if (home in teams) and (away in teams):
+                        match.update_club_stats(self.round_applied.points, self.round_applied.neutralGround)
+        final_table = super().tie_break(teams)
+        return final_table

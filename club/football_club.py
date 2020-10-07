@@ -15,7 +15,7 @@ It also defines a Tactic class which defines a football tactical scheme
 # distinction between the stats
 # we can init the points or the goals scored but can't export them ?
 
-from club.club import Club
+from club.club import Club, BackUpClub
 import xml.etree.ElementTree as ET
 from player.football_player import FootballPlayer
 import os
@@ -40,9 +40,6 @@ class FootballClub(Club):
                         Player
             pot : int
                         The club's pot (used for the draw in some competitions, leave to 0 if not used)
-            exit_group : int
-                        In Football competitions group stages followed by a knockout stage is commonplace. In such
-                        cases football clubs coming from the same group shouldn't play against each other straight away
             nbWin : int
                         Number of matches won by the club
             nbDrawn : int
@@ -58,11 +55,8 @@ class FootballClub(Club):
                         Number of goals conceded by the club in the competition
             awayGoalsScored : int
                         Number of goals scored by the club when playing away from home
-            backUps : list of dict
-                        A list of dictionaries used to back up some stats (namely, the aforementioned ones plus any
-                        stats specific to your Club subclass relevant to the sport simulated)
-            matchList : list of FootballResult
-                        The Club's results. In this case it's not generic Results, but Football results
+            backUps : dict of BackUpFootballClub
+                        A dictionary of BackUpFootballClub, backing up the stats of each Round. Rounds are used as keys.
             tactics : list of Tactic
                         The list of the tactical setups used by the managers for a match. Football teams may line up
                         in various setups. Some manager always play the same setup, with the players always placed
@@ -76,15 +70,14 @@ class FootballClub(Club):
             -------
             export_to_xml : str -> None
                         Writes the team's data to an XML file, path given in attribute
+            write_club_data : bool -> bool -> str
+                        Returns a string displaying the club's data, to be used to write a league table
             reset_matches_data : None -> None
                         Resets the nbWin, nbDrawn, nbLosses, points, goalsScored, goalsConceded attributes to 0
-            backup_data : None -> None
-                        Stores the current stats in a dict in the BackUps attribute
-            restore_last_backup : None -> None
-                        Restores the last backup in the BackUps attribute
-            app_result : FootballResult -> None
-                        Adds a FootballResult (it's a FootballClub) to the matchList
-            + methods to handle the goals scored
+            backup_data : Round -> bool -> None
+                        Stores the current stats in a BackUpClub object in the BackUps dict, with the given Round as key
+            restore_backup : Round -> None
+                        Restores the backup in the BackUps attribute corresponding to the Round given in parameter
     """
 
     def __init__(self, club_data):
@@ -106,7 +99,6 @@ class FootballClub(Club):
         self.goalsScored = 0
         self.goalsConceded = 0
         self.awayGoalsScored = 0
-        self.exit_group = -1
         self.tactics = []
 
         club_tree = ET.parse(club_data)
@@ -152,8 +144,6 @@ class FootballClub(Club):
                 self.tactics.append(Tactic(df, md, fw, w))
             elif e.tag == 'player':
                 self.players.append(FootballPlayer(e))
-            elif e.tag == 'exit_group':
-                self.exit_group = int(e.text)
             else:
                 print("Unknown data in the Club data file ! Ignoring....")
 
@@ -216,9 +206,16 @@ class FootballClub(Club):
         if path is not None:
             os.chdir(og_dir)
 
-    def write_table_data(self):
+    def write_table_data(self, nat, tier):
         """
            Returns the club data under the form of a string, so it can be used to write a table
+
+           Parameters
+           ----------
+           nat : bool
+                        Should the club's nationality feature in the string
+           tier : bool
+                        Should the club's tier feature in the string
 
            Returns
            ----------
@@ -226,11 +223,17 @@ class FootballClub(Club):
                        The string containing the club's relevant data for its ranking. Standardize the format
                        for your own sport
         """
-        ranking_string = self.name + ", " + str(self.points) + " pts, " + \
+        nat_str = ""
+        if nat:
+            nat_str = " ("+self.nationality+")"
+        tier_str = ""
+        if tier:
+            tier_str = " ("+str(self.tier)+")"
+        ranking_string = self.name + nat_str + tier_str + ", " + str(self.points) + " pts, " + \
                          str(self.nbWin + self.nbDrawn + self.nbLosses) + "P:" + \
                          str(self.nbWin) + "W/" + str(self.nbDrawn) + "D/" + str(self.nbLosses) + "L, " + \
                          str(self.goalsScored) + "GS, " + str(self.goalsConceded) + \
-                         "GC, Diff:" + str(self.goalsScored - self.goalsConceded)
+                         "GC, Diff: " + str(self.goalsScored - self.goalsConceded)
         return ranking_string
 
     def reset_matches_data(self):
@@ -245,30 +248,113 @@ class FootballClub(Club):
         self.goalsConceded = 0
         self.awayGoalsScored = 0
 
-    def backup_data(self):
+    def backup_data(self, round_entry, addition=False):
         """
-           Saves the club's stats in a backup dict in backUps
-        """
-        self.backUps.append({'points': self.points,
-                             'won': self.nbWin,
-                             'drawn': self.nbDrawn,
-                             'lost': self.nbLosses,
-                             'scored': self.goalsScored,
-                             'conceded': self.goalsConceded,
-                             'scored_away': self.awayGoalsScored})
+           Saves the club's current stats in the backUps dict by creating a BackUpFootballClub entry in it. The entry is
+           associated to the round_entry key
 
-    def restore_last_backup(self):
+           Parameters
+           ----------
+           round_entry : Round
+                       The key used to associated the backed-up data with, so that it is possible to find it again
+                       easily
+           addition : bool
+                        If set to True and the round_entry key already exists in the backUps dict, stats will be
+                        added rather than overwrite the already existing backup
         """
-           Restores the latest back-uped data in backUps
+        if (not addition) or (round_entry not in self.backUps.keys()):
+            self.backUps[round_entry] = BackUpFootballClub(self)
+        else:
+            self.backUps[round_entry].add_data(self)
+
+    def restore_backup(self, round_entry):
         """
-        last_backup = self.backUps.pop()
-        self.points = last_backup['points']
-        self.nbWin = last_backup['won']
-        self.nbDrawn = last_backup['drawn']
-        self.nbLosses = last_backup['lost']
-        self.goalsScored = last_backup['scored']
-        self.goalsConceded = last_backup['conceded']
-        self.awayGoalsScored = last_backup['scored_away']
+           Restores previously backed-up data corresponding to a certain round
+
+           Parameters
+           ----------
+           round_entry : Round
+                       The Round used to look up for data in the backUps attribute. If the key is found in backUps the
+                       corresponding data is restored. Else nothing happens
+        """
+        if round_entry in self.backUps.keys():
+            self.backUps[round_entry].restore(self)
+
+
+class BackUpFootballClub(BackUpClub):
+    """
+            Defines the class which holds the back-up data of a FootballClub.
+
+            Attributes
+            ----------
+            pot : int
+                        The club's pot (used for the draw in some competitions, leave to 0 if not used)
+            nbWin : int
+                        Number of matches won by the club
+            nbDrawn : int
+                        Number of matches drawn by the club
+            nbLosses : int
+                        Number of matches lost by the club
+            points : int
+                        Number of points gained by the club. Most sports give a various number of points depending on
+                        the result of the match
+            goalsScored : int
+                        Number of goals scored by the club in the competition
+            goalsConceded : int
+                        Number of goals conceded by the club in the competition
+            awayGoalsScored : int
+                        Number of goals scored by the club when playing away from home
+
+            Methods
+            -------
+            restore : FootballClub -> None
+                        Sets the attributes of the FootballClub given in attribute to the values of these attributes in
+                        self.
+            add_data : Club -> None
+                        Adds the current club data to the existing backup object
+    """
+
+    def __init__(self, club):
+        """
+           Initialize the back-up object by copying the current values of various attributes of the target club
+
+           Parameters
+           ----------
+           club : FootballClub
+                       The football club which is being backed-up
+        """
+        super().__init__(club)
+        self.goalsScored = club.goalsScored
+        self.goalsConceded = club.goalsConceded
+        self.awayGoalsScored = club.awayGoalsScored
+
+    def restore(self, club):
+        """
+           Restores the backed-up data, essentially by doing the reverse of the constructor
+
+           Parameters
+           ----------
+           club : FootballClub
+                       The football club which is being restored
+        """
+        super().restore(club)
+        club.goalsScored = self.goalsScored
+        club.goalsConceded = self.goalsConceded
+        club.awayGoalsScored = self.awayGoalsScored
+
+    def add_data(self, club):
+        """
+           Adds club data to an already existing backup object
+
+           Parameters
+           ----------
+           club : FootballClub
+                       The club data which is being congregated to the current data
+        """
+        super().add_data(club)
+        self.goalsScored += club.goalsScored
+        self.goalsConceded += club.goalsConceded
+        self.awayGoalsScored += club.awayGoalsScored
 
 
 class Tactic:

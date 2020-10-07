@@ -1,0 +1,11 @@
+Shakhtar (dummy country) 1 - 1 Inter (dummy country)
+
+
+
+Goals:
+
+Shakhtar:
+Shakhtar_11 28
+
+Inter:
+Inter_20 72

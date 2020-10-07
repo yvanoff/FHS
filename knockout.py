@@ -38,6 +38,8 @@ class Knockout(Round):
         nbRounds : int
                     Number of rounds to be played. If >= 2, the teams in the round 2 or afterwards will be the
                     teams who won in the previous round
+        exit_pot: int
+                    Teams who qualify from this Knckout round will have this pot
 
         Methods
         -------
@@ -67,7 +69,9 @@ class Knockout(Round):
         """
         # exit pot for knockout
         super().__init__(sport, round_parameters, nat, tier, engine_cfg_path)
-        self.nbRounds = round_parameters['Round']['Play_x_rounds']  # Number of consecutive rounds to be played
+        self.nbRounds = 1
+        if 'Play_x_rounds' in round_parameters['Round'].keys():
+            self.nbRounds = round_parameters['Round']['Play_x_rounds']  # Number of consecutive rounds to be played
         # extra time type to use if teams are tied
         # possible values are:
         # - "" for no extra time
@@ -75,9 +79,13 @@ class Knockout(Round):
         # - "gg" for golden goal
         # - "sg" for silver goal
 
+        self.exit_pot = 0
+        if 'Exit_pot' in round_parameters['Round'].keys():
+            self.exit_pot = round_parameters['Round']['Exit_pot']
         self.tieBreakers = []
         for tb in round_parameters['Round']['Tie_breakers']:
-            self.tieBreakers.append(choose_correct_tb(tb))
+            self.tieBreakers.append(choose_correct_tb(tb, self))
+        self.points = [1, 0, 0]
 
         if 'Is_nationality_important' in round_parameters['Round'].keys():
             self.isNatImp = round_parameters['Round']['Is_nationality_important']
@@ -98,15 +106,13 @@ class Knockout(Round):
            list of Club
                 List of qualified clubs after this round
         """
-        # les résultats du round seront présentés par confrontations
-        # exemples: quarts de ldc
-        # il y aura un dossier "Quarts"
-        # avec des sous-dossiers "Barça-Bayern" "Atlético-RBL" etc.... et les résultats dans chacun d'entre eux
         if list_added_clubs is None:
             list_added_clubs = []
         for ac in list_added_clubs:
             self.clubs.append(ac)
         qualified_clubs = []
+        for c in self.clubs:
+            c.reset_matches_data()
         self.results = []
         for r in range(self.nbRounds):
             res_round = []
@@ -120,10 +126,6 @@ class Knockout(Round):
                 # MAIS ON S'ARRETE PAS SI UNE EQUIPE A GAGNEE QUE L'ALLER
                 list_conf = []
                 if not ((type(m[0]) is Bye) or (type(m[1]) is Bye)):
-                    m[0].backup_data()
-                    m[1].backup_data()
-                    m[0].reset_matches_data()
-                    m[1].reset_matches_data()
                     for c in range(self.nbConfrontations):
                         if (self.nbConfrontations % 2) == 0:
                             if (c % 2) == 1:
@@ -142,7 +144,11 @@ class Knockout(Round):
                         list_conf.append(res)
                         res.update_club_stats(neutral_ground=self.neutralGround)
                         res.update_player_stats()
+                    for t_b in m:
+                        t_b.backup_data(self, addition=True)
                     winner = self._determine_tie_winner(m)
+                    for t_b in m:
+                        t_b.restore_backup(self)
                     qualified_clubs.append(winner)
                 else:
                     # potentially store the bye in results to write it later
@@ -155,21 +161,27 @@ class Knockout(Round):
                     else:
                         print("Error with the number of teams !")  # would be better to have an exception
                 res_round.append(list_conf)
-                m[0].reset_matches_data()
-                m[1].reset_matches_data()
-                m[0].restore_last_backup()
-                m[1].restore_last_backup()
             # and then the list of teams is replaced by qualified_teams for the next
             self.results.append(res_round)
             for qt in qualified_clubs:
                 qt.pot = 0
                 qt.exit_group = -1
             self.clubs = qualified_clubs
+        for c in qualified_clubs:
+            c.pot = self.exit_pot
+            c.reset_matches_data()
         return qualified_clubs
 
-    def write(self):
+    def write(self, nat=None, tier=None):
         """
                Writes a knockout round's results
+
+               Parameters
+               ----------
+               nat : bool
+                    Should the nationality appear in match reports
+               tier : bool
+                    Should the club's tier appear in match reports
         """
         for i_n in range(len(self.names)):
             try:
@@ -188,7 +200,7 @@ class Knockout(Round):
                             os.chdir(write_ht.club.name.upper()+"_"+write_at.club.name.upper())
                             for conf_i in range(len(list_conf)):
                                 conf = list_conf[conf_i]
-                                conf.write(prev_m=list_conf[:conf_i])
+                                conf.write(nat=nat, tier=tier, prev_m=list_conf[:conf_i])
                         os.chdir(new_og_dir)
                     except FileExistsError:
                         print("File already exists; aborting....")
@@ -214,30 +226,30 @@ class Knockout(Round):
         # note: si on fait un playoff, mais le nombre de confrontations est impair
         # jouer le premier playoff pas sur terrain neutre mais chez l'équipe qui a le moins reçu
         winner = None
-        if True:
-            if clubs[0].nbWin > clubs[1].nbWin:
-                winner = clubs[0]
-            elif clubs[0].nbWin < clubs[1].nbWin:
-                winner = clubs[1]
+        i = 0
+        while (winner is None) and (i < len(self.tieBreakers)):
+            ranking = self.tieBreakers[i].tie_break(clubs)
+            if not isinstance(ranking[0], list):
+                winner = ranking[0]
             else:
-                if (clubs[0].goalsScored - clubs[0].goalsConceded) > (clubs[1].goalsScored - clubs[1].goalsConceded):
-                    winner = clubs[0]
-                elif (clubs[0].goalsScored - clubs[0].goalsConceded) < (clubs[1].goalsScored - clubs[1].goalsConceded):
-                    winner = clubs[1]
-                else:
-                    if clubs[0].awayGoalsScored > clubs[1].awayGoalsScored:
-                        winner = clubs[0]
-                    elif clubs[0].awayGoalsScored < clubs[1].awayGoalsScored:
-                        winner = clubs[1]
-                    else:
-                        winner = rnd.choice(clubs)
-        else:
-            i = 0
-            while (winner is None) or (i < len(self.tieBreakers)):
-                ranking = self.tieBreakers[i].tieBreak(clubs)
-                if not isinstance(ranking[0], list):
-                    winner = ranking[0]
-                else:
-                    winner = clubs[0]
-                i += 1
+                winner = clubs[0]
+            i += 1
+        if winner is None:
+            winner = rnd.choice(clubs)
         return winner
+    # tie breaker criteria needed for knockout:
+    # - number of wins (is number of points with [1,0,0]
+    # - goal difference
+    # - number of goals scored away
+    # - extra time (gg/sg/normal)
+    # - x replays (on neutral ground or not)
+    # - pen shootout
+    # - coin toss
+
+    # pour les playoffs:
+    # mettre genre "5playoffs" ou "infplayoffs" dans le json
+    # on applique le playoffs x fois
+    # en réappliquant les cirtères précédants si il faut
+    # eg is on a "win", "diff", "goalscoredaway", "normalET", "5playoff" on aura 5 playoffs avec prolongations normales
+    # suffit de rajouter "tab" derrière si on veut des tabs après un certain nombre de tabs
+    # tab et prolongations s'appliquent au dernier résultat en mémoire (puisque ça doit être le match courant)

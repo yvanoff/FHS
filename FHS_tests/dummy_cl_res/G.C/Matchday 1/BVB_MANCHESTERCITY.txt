@@ -1,0 +1,16 @@
+BVB (dummy country) 6 - 1 ManchesterCity (dummy country)
+
+
+
+Goals:
+
+BVB:
+BVB_17 20
+BVB_20 36
+BVB_17 45+3
+BVB_20 72 (pen)
+BVB_20 85
+BVB_20 90+1
+
+ManchesterCity:
+ManchesterCity_18 41

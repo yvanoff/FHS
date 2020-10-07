@@ -1,0 +1,12 @@
+BVB (dummy country) 1 - 2 Porto (dummy country)
+
+
+
+Goals:
+
+BVB:
+BVB_17 45+1
+
+Porto:
+Porto_21 24
+Porto_21 32

@@ -1,0 +1,14 @@
+Bayern (dummy country) 2 - 3 Atletico (dummy country)
+
+
+
+Goals:
+
+Bayern:
+Bayern_19 37
+Bayern_19 45
+
+Atletico:
+Atletico_11 17
+Atletico_17 21
+Atletico_14 58

@@ -1,0 +1,15 @@
+Ajax (dummy country) 1 - 5 PSG (dummy country)
+
+
+
+Goals:
+
+Ajax:
+Ajax_16 18
+
+PSG:
+PSG_16 60
+PSG_16 66 (pen)
+PSG_16 74
+PSG_16 88
+PSG_19 89

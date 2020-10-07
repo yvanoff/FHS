@@ -1,0 +1,13 @@
+PSG (dummy country) 2 - 2 Liverpool (dummy country)
+
+
+
+Goals:
+
+PSG:
+PSG_17 6
+PSG_16 61
+
+Liverpool:
+Liverpool_20 59
+Liverpool_21 81

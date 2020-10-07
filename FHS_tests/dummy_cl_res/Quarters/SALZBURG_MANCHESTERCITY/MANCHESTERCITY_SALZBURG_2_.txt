@@ -1,0 +1,15 @@
+ManchesterCity (dummy country) 1 - 1 Salzburg (dummy country)
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_18 51
+
+Salzburg:
+Salzburg_18 90+2
+
+
+
+Leg 1 result: Salzburg 1 - 2 ManchesterCity

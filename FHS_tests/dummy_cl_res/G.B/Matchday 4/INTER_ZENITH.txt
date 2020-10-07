@@ -1,0 +1,9 @@
+Inter (dummy country) 2 - 0 Zenith (dummy country)
+
+
+
+Goals:
+
+Inter:
+Inter_21 12
+Inter_16 24

@@ -28,8 +28,26 @@ class GoalDifference(Tiebreaker):
                     the list
     """
 
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, cur_round):
+        super().__init__(name, cur_round)
 
     def tie_break(self, teams):
-        pass
+        diff_for_each = []
+        for t in teams:
+            diff_for_each.append((t.goalsScored - t.goalsConceded, t))
+        unready_table = sorted(diff_for_each, key=self._first, reverse=True)
+        diff_only = [t[0] for t in unready_table]
+        final_table = []
+        d_i = 0
+        while d_i < len(diff_only):
+            d = diff_only[d_i]
+            occ = diff_only.count(d)
+            if occ == 1:
+                final_table.append(unready_table[d_i][1])
+            else:
+                grouping = []
+                for occ_i in range(occ):
+                    grouping.append(unready_table[d_i+occ_i][1])
+                final_table.append(grouping)
+            d_i += occ
+        return final_table

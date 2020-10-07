@@ -1,0 +1,16 @@
+Salzburg (dummy country) 5 - 2 Ajax (dummy country)
+
+
+
+Goals:
+
+Salzburg:
+Salzburg_19 1
+Salzburg_19 34
+Salzburg_19 44
+Salzburg_19 58
+Salzburg_13 63
+
+Ajax:
+Ajax_17 37
+Ajax_21 62

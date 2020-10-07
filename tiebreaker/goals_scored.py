@@ -26,8 +26,26 @@ class GoalsScored(Tiebreaker):
                     If some teams are still tied after applying the tie breaking criteria they'll be grouped in a list
                     inside the list
     """
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, cur_round):
+        super().__init__(name, cur_round)
 
     def tie_break(self, teams):
-        pass
+        gs_for_each = []
+        for t in teams:
+            gs_for_each.append((t.goalsScored, t))
+        unready_table = sorted(gs_for_each, key=self._first, reverse=True)
+        goals_only = [t[0] for t in unready_table]
+        final_table = []
+        g_i = 0
+        while g_i < len(goals_only):
+            g = goals_only[g_i]
+            occ = goals_only.count(g)
+            if occ == 1:
+                final_table.append(unready_table[g_i][1])
+            else:
+                grouping = []
+                for occ_i in range(occ):
+                    grouping.append(unready_table[g_i+occ_i][1])
+                final_table.append(grouping)
+            g_i += occ
+        return final_table

@@ -1,0 +1,14 @@
+Besiktas (dummy country) 1 - 4 ManchesterCity (dummy country)
+
+
+
+Goals:
+
+Besiktas:
+Besiktas_4 74
+
+ManchesterCity:
+ManchesterCity_18 16
+ManchesterCity_17 42
+ManchesterCity_17 58
+ManchesterCity_19 71

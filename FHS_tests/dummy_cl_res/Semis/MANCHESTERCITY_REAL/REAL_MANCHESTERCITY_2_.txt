@@ -1,0 +1,15 @@
+Real (dummy country) 1 - 1 ManchesterCity (dummy country)
+
+
+
+Goals:
+
+Real:
+Real_13 87
+
+ManchesterCity:
+ManchesterCity_3 45
+
+
+
+Leg 1 result: ManchesterCity 5 - 2 Real

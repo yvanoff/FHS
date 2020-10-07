@@ -1,0 +1,16 @@
+Inter (dummy country) 2 - 5 Real (dummy country)
+
+
+
+Goals:
+
+Inter:
+Inter_16 24
+Inter_16 89
+
+Real:
+Real_21 5
+Real_19 9 (pen)
+Real_21 35
+Real_19 42
+Real_16 45+2

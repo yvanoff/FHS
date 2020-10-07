@@ -1,0 +1,11 @@
+Atalanta (dummy country) 1 - 1 Salzburg (dummy country)
+
+
+
+Goals:
+
+Atalanta:
+Atalanta_17 68
+
+Salzburg:
+Salzburg_20 63

@@ -1,0 +1,11 @@
+Shakhtar (dummy country) 1 - 1 Zenith (dummy country)
+
+
+
+Goals:
+
+Shakhtar:
+Shakhtar_21 24
+
+Zenith:
+Zenith_20 70 (pen)

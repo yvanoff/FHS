@@ -1,6 +1,6 @@
 Final table for G.C
 
-1. Porto, 0 pts, 0P:0W/0D/0L, 0GS, 0GC, Diff:0
-2. Salzburg, 0 pts, 0P:0W/0D/0L, 0GS, 0GC, Diff:0
-3. Atalanta, 8 pts, 6P:2W/2D/2L, 9GS, 9GC, Diff:0
-4. Olympiakos, 2 pts, 6P:0W/2D/4L, 4GS, 16GC, Diff:-12
+1. ManchesterCity (dummy country), 13 pts, 6P:4W/1D/1L, 20GS, 13GC, Diff: 7
+2. BVB (dummy country), 9 pts, 6P:3W/0D/3L, 14GS, 9GC, Diff: 5
+3. Porto (dummy country), 7 pts, 6P:2W/1D/3L, 15GS, 12GC, Diff: 3
+4. Besiktas (dummy country), 6 pts, 6P:2W/0D/4L, 4GS, 19GC, Diff: -15

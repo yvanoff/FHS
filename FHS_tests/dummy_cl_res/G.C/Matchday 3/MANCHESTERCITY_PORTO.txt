@@ -1,0 +1,15 @@
+ManchesterCity (dummy country) 3 - 3 Porto (dummy country)
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_18 7
+ManchesterCity_18 84
+ManchesterCity_13 90+1
+
+Porto:
+Porto_20 45
+Porto_11 51
+Porto_20 76

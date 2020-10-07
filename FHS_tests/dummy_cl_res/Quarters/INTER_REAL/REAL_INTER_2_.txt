@@ -1,0 +1,18 @@
+Real (dummy country) 3 - 2 Inter (dummy country)
+
+
+
+Goals:
+
+Real:
+Real_19 1
+Real_17 73
+Real_19 90+2
+
+Inter:
+Inter_21 8
+Inter_18 64
+
+
+
+Leg 1 result: Inter 2 - 5 Real

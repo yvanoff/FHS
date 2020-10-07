@@ -1,0 +1,11 @@
+Salzburg (dummy country) 0 - 3 Atalanta (dummy country)
+
+
+
+Goals:
+
+
+Atalanta:
+Atalanta_20 5
+Atalanta_20 60
+Atalanta_18 79

@@ -1,0 +1,12 @@
+Atletico (dummy country) 1 - 2 Bayern (dummy country)
+
+
+
+Goals:
+
+Atletico:
+Atletico_10 61
+
+Bayern:
+Bayern_10 13
+Bayern_17 67

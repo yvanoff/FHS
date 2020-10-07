@@ -1,0 +1,11 @@
+Bayern (dummy country) 1 - 1 Liverpool (dummy country)
+
+
+
+Goals:
+
+Bayern:
+Bayern_21 41
+
+Liverpool:
+Liverpool_18 25

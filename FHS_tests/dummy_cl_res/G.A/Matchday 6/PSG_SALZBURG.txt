@@ -1,0 +1,10 @@
+PSG (dummy country) 3 - 0 Salzburg (dummy country)
+
+
+
+Goals:
+
+PSG:
+PSG_18 85
+PSG_6 89
+PSG_20 90+1

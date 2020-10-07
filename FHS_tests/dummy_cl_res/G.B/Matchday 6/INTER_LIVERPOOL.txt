@@ -1,0 +1,11 @@
+Inter (dummy country) 1 - 1 Liverpool (dummy country)
+
+
+
+Goals:
+
+Inter:
+Inter_13 19
+
+Liverpool:
+Liverpool_12 45+2

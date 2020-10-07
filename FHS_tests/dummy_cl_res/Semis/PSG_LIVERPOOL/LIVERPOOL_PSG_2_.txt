@@ -1,0 +1,17 @@
+Liverpool (dummy country) 2 - 2 PSG (dummy country)
+
+
+
+Goals:
+
+Liverpool:
+Liverpool_21 27
+Liverpool_21 33
+
+PSG:
+PSG_15 67
+PSG_21 78
+
+
+
+Leg 1 result: PSG 2 - 2 Liverpool

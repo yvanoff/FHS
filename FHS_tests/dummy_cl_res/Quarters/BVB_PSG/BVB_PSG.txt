@@ -1,9 +1,18 @@
-BVB 0 - 1 PSG
+BVB (dummy country) 4 - 5 PSG (dummy country)
 
 
 
 Goals:
 
+BVB:
+BVB_17 8
+BVB_17 22
+BVB_17 26
+BVB_20 75
 
 PSG:
-PSG_21 90+3
+PSG_18 12
+PSG_16 19 (pen)
+PSG_17 35
+PSG_18 38
+PSG_19 52

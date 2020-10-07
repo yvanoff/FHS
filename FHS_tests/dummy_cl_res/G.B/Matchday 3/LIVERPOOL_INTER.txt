@@ -1,0 +1,17 @@
+Liverpool (dummy country) 3 - 5 Inter (dummy country)
+
+
+
+Goals:
+
+Liverpool:
+Liverpool_20 8
+Liverpool_21 32
+Liverpool_20 51
+
+Inter:
+Inter_20 21
+Inter_20 45+3
+Inter_21 66 (pen)
+Inter_21 74
+Inter_18 89

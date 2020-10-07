@@ -1,0 +1,14 @@
+Ajax (dummy country) 2 - 3 Salzburg (dummy country)
+
+
+
+Goals:
+
+Ajax:
+Ajax_19 31
+Ajax_20 44 (pen)
+
+Salzburg:
+Salzburg_15 18
+Salzburg_20 45+1
+Salzburg_19 84

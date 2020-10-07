@@ -36,8 +36,6 @@ class FootballResult(Result):
             -------
             add_goal : -> None
                         Adds a goal scored to the list of goals
-updateTeamStats: updates Team's stats and add to their results !
-write_results
     """
 
     def __init__(self, home_team, away_team):
@@ -132,12 +130,16 @@ write_results
                 if not g.isOG:
                     g.goalScorer.goalsScored += 1
 
-    def write(self, path=None, prev_m=None):
+    def write(self, nat, tier, path=None, prev_m=None):
         """
            Writes the match's result, either in the current directory or in a specified path
 
            Parameters
            ----------
+           nat : bool
+                        Should the clubs's nationalities feature in the written report
+           tier : bool
+                        Should the club's tiers feature in the report
            path : str
                         The path where the result should be written. If not specified the file is written in the
                         current directory
@@ -154,10 +156,20 @@ write_results
         prev_str = ""
         if prev_m:
             prev_str = "_"+str(len(prev_m)+1)+"_"
+        tier_h_str = ""
+        tier_a_str = ""
+        nat_h_str = ""
+        nat_a_str = ""
+        if nat:
+            nat_h_str = " ("+team_names[0][0].club.nationality+")"
+            nat_a_str = " (" + team_names[1][0].club.nationality + ")"
+        if tier:
+            tier_h_str = " ("+str(team_names[0][0].club.tier)+")"
+            tier_a_str = " (" + str(team_names[1][0].club.tier) + ")"
         filename = team_names[0][1].upper()+"_"+team_names[1][1].upper()+prev_str+".txt"
         file = open(filename, "w+")
-        file.write(team_names[0][1]+" "+str(self.score[team_names[0][0]])+" - " +
-                   str(self.score[team_names[1][0]])+" "+team_names[1][1])
+        file.write(team_names[0][1]+nat_h_str+tier_h_str+" "+str(self.score[team_names[0][0]])+" - " +
+                   str(self.score[team_names[1][0]])+" "+team_names[1][1]+nat_a_str+tier_a_str)
         file.write("\n\n\n\n")
         if len(self.goals[team_names[0][0]])+len(self.goals[team_names[1][0]]) > 0:
             file.write("Goals:\n\n")

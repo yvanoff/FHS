@@ -79,13 +79,27 @@ class Competition:
         json_cfg = json.loads(comp_cfg)
 
         self.engineCfgPath = engine_cfg_path
-        self.name = json_cfg['Name']
-        self.sport = json_cfg['Sport']
-        self.outputDir = json_cfg['Output_directory']
-        self.outputDir_teams = json_cfg['Output_directory_for_qualified_teams_data']
-        self.isNatImp = json_cfg['Is_nationality_important']
-        self.isTierImp = json_cfg['Is_club_level_important']
-        self.statisticsComputed = json_cfg['Statistics']
+        self.name = ''
+        if 'name' in json_cfg.keys():
+            self.name = json_cfg['Name']
+        self.sport = 'foot'
+        if 'Sport' in json_cfg.keys():
+            self.sport = json_cfg['Sport']
+        self.outputDir = '.'
+        if 'Output_directory' in json_cfg.keys():
+            self.outputDir = json_cfg['Output_directory']
+        self.outputDir_teams = ''
+        if 'Output_directory_for_qualified_teams_data' in json_cfg.keys():
+            self.outputDir_teams = json_cfg['Output_directory_for_qualified_teams_data']
+        self.isNatImp = False
+        if 'Is_nationality_important' in json_cfg.keys():
+            self.isNatImp = json_cfg['Is_nationality_important']
+        self.isTierImp = False
+        if 'Is_club_level_important' in json_cfg.keys():
+            self.isTierImp = json_cfg['Is_club_level_important']
+        self.statisticsComputed = []
+        if 'Statistics' in json_cfg.keys():
+            self.statisticsComputed = json_cfg['Statistics']
         self.clubs = []
 
         self.rounds = []
@@ -116,6 +130,7 @@ class Competition:
                 os.mkdir(self.outputDir_teams)
                 os.chdir(self.outputDir_teams)
                 for c in self.clubs:
+                    # parameters for export_to_xml
                     c.export_to_xml()
             except FileExistsError:
                 print("Directory already exists; aborting....")
@@ -129,7 +144,7 @@ class Competition:
             os.mkdir(self.outputDir)
             os.chdir(self.outputDir)
             for r in self.rounds:
-                r.write()
+                r.write(self.isNatImp, self.isTierImp)
             for s in self.statisticsComputed:
                 # we should do something here !
                 pass

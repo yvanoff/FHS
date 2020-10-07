@@ -1,0 +1,14 @@
+Salzburg (dummy country) 4 - 1 PSG (dummy country)
+
+
+
+Goals:
+
+Salzburg:
+Salzburg_18 45+5
+Salzburg_19 50
+Salzburg_20 73
+PSG_12 81 o.g.
+
+PSG:
+PSG_18 21

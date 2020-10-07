@@ -15,10 +15,13 @@ To add support for a new sport in FHS, just add a relevant class defining a club
 should be name of the sport+Club
 
 Since adding a new class requires modifying the competition manager to load the correct class, this file also
-provides a method which uses the club's init paramters and a string to initialize the correct Club subclass:
+provides a method which uses the club's init parameters and a string to initialize the correct Club subclass:
 the string tells the method which sport is being simulated (and so which Club subclass should be used).
 This method should be modified in case support for a new sport (and so a corresponding Club subclass) is added,
 so the correct Club subclass is loaded
+
+There is also a BackUp club class allowing one to save data of a club and restore it. It should be overridden
+with your own implementation for your own sport
 
 @author: alexa
 """
@@ -50,24 +53,21 @@ class Club:
             points : int
                         Number of points gained by the club. Most sports give a various number of points depending on
                         the result of the match
-            backUps : list of dict
-                        A list of dictionaries used to back up some stats (namely, the aforementioned ones plus any
-                        stats specific to your Club subclass relevant to the sport simulated)
-            matchList : list of Result
-                        The Club's results in the competition being simulated
+            backUps : dict of BackUpClub
+                        A dictionary of BackUpClub, backing up the stats of each Round. Rounds are used as keys.
 
             Methods
             -------
             export_to_xml : str -> None
                         Writes the team's data to an XML file, path given in attribute
+            write_club_data : bool -> bool -> str
+                        Returns a string displaying the club's data, to be used to write a league table
             reset_matches_data : None -> None
                         Resets the nbWin, nbDrawn, nbLosses attributes to 0
-            backup_data : None -> None
-                        Stores the current stats in a dict in the BackUps attribute
-            restore_last_backup : None -> None
-                        Restores the last backup in the BackUps attribute
-            app_result : Result -> None
-                        Adds a Result to the matchList
+            backup_data : Round -> bool -> None
+                        Stores the current stats in a BackUpClub object in the BackUps dict, with the given Round as key
+            restore_backup : Round -> None
+                        Restores the backup in the BackUps attribute corresponding to the Round given in parameter
     """
 
     def __init__(self, club_data):
@@ -97,8 +97,7 @@ class Club:
         self.nbLosses = 0
         self.nbDrawn = 0
         self.points = 0
-        self.backUps = []
-        self.matchList = []
+        self.backUps = {}
 
     def export_to_xml(self, path=None):
         """
@@ -112,10 +111,16 @@ class Club:
         """
         pass
 
-    def write_club_data(self):
+    def write_club_data(self, nat, tier):
         """
            Returns the club data under the form of a string, so it can be used to write a table
 
+           Parameters
+           ----------
+           nat : bool
+                        Should the club's nationality feature in the string
+           tier : bool
+                        Should the club's tier feature in the string
            Returns
            ----------
            str
@@ -131,6 +136,34 @@ class Club:
         """
         pass
 
+    def backup_data(self, round_entry, addition=False):
+        """
+           Saves the club's current stats in the backUps dict by creating a BackUpClub entry in it. The entry is
+           associated to the round_entry key
+
+           Parameters
+           ----------
+           round_entry : Round
+                       The key used to associated the backed-up data with, so that it is possible to find it again
+                       easily
+           addition : bool
+                        If set to True and the round_entry key already exists in the backUps dict, stats will be
+                        added rather than overwrite the already existing backup
+        """
+        pass
+
+    def restore_backup(self, round_entry):
+        """
+           Restores previously backed-up data corresponding to a certain round
+
+           Parameters
+           ----------
+           round_entry : Round
+                       The Round used to look up for data in the backUps attribute. If the key is found in backUps the
+                       corresponding data is restored. Else nothing happens
+        """
+        pass
+
 
 class Bye(Club):
     """
@@ -141,3 +174,72 @@ class Bye(Club):
 
     def __init__(self, club_data=None):
         self.name = "bye"
+
+
+class BackUpClub:
+    """
+            Defines the class which holds the back-up data of a Club.
+
+            Attributes
+            ----------
+            pot : int
+                        The club's pot (used for the draw in some competitions, leave to 0 if not used)
+            nbWin : int
+                        Number of matches won by the club
+            nbDrawn : int
+                        Number of matches drawn by the club
+            nbLosses : int
+                        Number of matches lost by the club
+            points : int
+                        Number of points gained by the club. Most sports give a various number of points depending on
+                        the result of the match
+
+            Methods
+            -------
+            restore : Club -> None
+                        Sets the attributes of the Club given in attribute to the values of these attributes in self.
+            add_data : Club -> None
+                        Adds the current club data to the existing backup object
+    """
+
+    def __init__(self, club):
+        """
+           Initialize the back-up object by copying the current values of various attributes of the target club
+
+           Parameters
+           ----------
+           club : Club
+                       The club which is being backed-up
+        """
+        self.nbWin = club.nbWin
+        self.nbDrawn = club.nbDrawn
+        self.nbLosses = club.nbLosses
+        self.points = club.points
+
+    def restore(self, club):
+        """
+           Restores the backed-up data, essentially by doing the reverse of the constructor
+
+           Parameters
+           ----------
+           club : Club
+                       The club which is being restored
+        """
+        club.nbWin = self.nbWin
+        club.nbDrawn = self.nbDrawn
+        club.nbLosses = self.nbLosses
+        club.points = self.points
+
+    def add_data(self, club):
+        """
+           Adds club data to an already existing backup object
+
+           Parameters
+           ----------
+           club : Club
+                       The club data which is being congregated to the current data
+        """
+        self.nbWin += club.nbWin
+        self.nbDrawn += club.nbDrawn
+        self.nbLosses += club.nbLosses
+        self.points += club.points

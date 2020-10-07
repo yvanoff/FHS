@@ -21,10 +21,10 @@ from tiebreaker.conf_goals_scored import ConfGoalsScored
 from tiebreaker.goal_difference import GoalDifference
 from tiebreaker.goals_scored import GoalsScored
 from tiebreaker.points import Points
-from tiebreaker.tiebreakers import HardcodedTiebreaker
+from tiebreaker.conf_points import ConfPoints
 
 
-def choose_correct_tb(tb_name):
+def choose_correct_tb(tb_name, cur_round):
     correct_tb = None
     # here we init the tiebreakers
     # possible values are:
@@ -38,25 +38,23 @@ def choose_correct_tb(tb_name):
     # - conf-ags  to rank teams according to the away goals scored during their confrontations
     # - playoff to hold a playoff between two tied teams (HARDCODED)
     if tb_name == 'points':
-        correct_tb = Points(tb_name)
+        correct_tb = Points(tb_name, cur_round)
     elif tb_name == 'diff':
-        correct_tb = GoalDifference(tb_name)
+        correct_tb = GoalDifference(tb_name, cur_round)
     elif tb_name == 'gs':
-        correct_tb = GoalsScored(tb_name)
+        correct_tb = GoalsScored(tb_name, cur_round)
     elif tb_name == 'ags':
-        correct_tb = AwayGoalsScored(tb_name)
-    elif tb_name == 'conf-points':
-        correct_tb = HardcodedTiebreaker(tb_name)
+        correct_tb = AwayGoalsScored(tb_name, cur_round)
+    elif (tb_name == 'conf-points') or (tb_name == 'wins'):
+        correct_tb = ConfPoints(tb_name, cur_round)
     elif tb_name == 'conf-diff':
-        correct_tb = ConfGoalDifference(tb_name)
+        correct_tb = ConfGoalDifference(tb_name, cur_round)
     elif tb_name == 'conf-gs':
-        correct_tb = ConfGoalsScored(tb_name)
+        correct_tb = ConfGoalsScored(tb_name, cur_round)
     elif tb_name == 'conf-ags':
-        correct_tb = ConfAwayGoalsScored(tb_name)
+        correct_tb = ConfAwayGoalsScored(tb_name, cur_round)
     elif tb_name == 'playoff':
-        correct_tb = HardcodedTiebreaker(tb_name)
-    elif tb_name == 'playoff-':
-        correct_tb = HardcodedTiebreaker(tb_name)
+        correct_tb = PlayOff(tb_name, cur_round)
     else:
         print("Error ! Unknown tie-breaker")  # should raise an exception
     return correct_tb

@@ -1,6 +1,6 @@
 Final table for G.D
 
-1. Bayern, 0 pts, 0P:0W/0D/0L, 0GS, 0GC, Diff:0
-2. PSG, 0 pts, 0P:0W/0D/0L, 0GS, 0GC, Diff:0
-3. Ajax, 9 pts, 6P:3W/0D/3L, 13GS, 12GC, Diff:1
-4. Besiktas, 1 pts, 6P:0W/1D/5L, 4GS, 13GC, Diff:-9
+1. Real (dummy country), 13 pts, 6P:4W/1D/1L, 10GS, 5GC, Diff: 5
+2. Bayern (dummy country), 12 pts, 6P:4W/0D/2L, 15GS, 6GC, Diff: 9
+3. Atletico (dummy country), 7 pts, 6P:2W/1D/3L, 6GS, 8GC, Diff: -2
+4. Olympiakos (dummy country), 3 pts, 6P:1W/0D/5L, 1GS, 13GC, Diff: -12

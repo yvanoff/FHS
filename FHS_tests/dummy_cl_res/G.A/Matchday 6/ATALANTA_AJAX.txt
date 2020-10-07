@@ -1,0 +1,13 @@
+Atalanta (dummy country) 3 - 1 Ajax (dummy country)
+
+
+
+Goals:
+
+Atalanta:
+Atalanta_16 15
+Atalanta_16 21
+Atalanta_20 49
+
+Ajax:
+Ajax_18 12

@@ -37,6 +37,8 @@ class Round:
                     numerous actual rounds)
         sport : str
                     The sport played in the round
+        points : list of int
+                    Number of points gained for a victory, a draw, a loss
         clubsDataPath : str
                     Path to the directory containing the data of teams to be loaded for this round if any (if
                     it is empty - '' - no data will be loaded).
@@ -61,8 +63,9 @@ class Round:
         -------
         simulate : None -> list of Team
                     Plays the competition, saves the results in results and returns the list of qualified teams
-        write : None -> None
-                    Writes the competition results
+        write : Bool -> Bool -> None
+                    Writes the competition results. It uses the Competition's nat and tier parameters to know if
+                    those should appear on match reports
         get_clubs : None -> list of Club
                     Gives the list of Club taking place in the round
         _draw_round : list of Team -> int -> bool -> bool -> list of Team
@@ -96,13 +99,21 @@ class Round:
         self.isTierImp = tier
         self.engineCfgPath = engine_cfg_path
         self.sport = sport
-        self.names = round_parameters['Names']
-        self.clubsDataPath = round_parameters['Clubs_data']
-        self.nbConfrontations = round_parameters['Nb_times_teams_play_each_other']
-        self.neutralGround = round_parameters['Matches_on_neutral_ground']
+        if 'Names' in round_parameters.keys():
+            self.names = round_parameters['Names']
+        self.clubsDataPath = ''
+        if 'Clubs_data' in round_parameters.keys():
+            self.clubsDataPath = round_parameters['Clubs_data']
+        self.nbConfrontations = 1
+        if 'Nb_times_teams_play_each_other' in round_parameters.keys():
+            self.nbConfrontations = round_parameters['Nb_times_teams_play_each_other']
+        self.neutralGround = False
+        if 'Matches_on_neutral_ground' in round_parameters.keys():
+            self.neutralGround = round_parameters['Matches_on_neutral_ground']
         self.results = []
         self.clubs = self._load_clubs(self.clubsDataPath)
         self.tieBreakers = []
+        self.points = [3, 1, 0]
 
     def simulate(self, list_added_clubs=None):
         """
@@ -120,14 +131,20 @@ class Round:
         """
         pass
 
-    def write(self):
+    def write(self, nat=None, tier=None):
         """
                Writes the round's results (to be overridden by subclasses implementations)
+
+               Parameters
+               ----------
+               nat : bool
+                    Should the nationality appear in match reports
+               tier : bool
+                    Should the club's tier appear in match reports
         """
         pass
 
     def _draw_round(self, nb_groups):
-        # use self instead of arguments
         """
            Draw teams together for a Round
 
@@ -139,8 +156,6 @@ class Round:
 
            Parameters
            ----------
-           clubs : list of Club
-                List of the Club which are playing
             nb_groups : int
                 The number of pairings to be done
 
@@ -160,14 +175,18 @@ class Round:
             draw.append([])
         pots = []
         clubs_by_pot = {}
+        ok_opponents = {}
         for c in self.clubs:
             if c.pot not in pots:
                 pots.append(c.pot)
                 clubs_by_pot[c.pot] = [c]
             else:
                 clubs_by_pot[c.pot].append(c)
-            if c.exit_group != -1:
-                pass  # we have groups to handle
+            ok_opponents[c] = []
+            for o in self.clubs:
+                if o.pot != c.pot:
+                    ok_opponents[c].append(o)
+        # il faudrait twist les pots, ex: [1,2,3,4] devient [1,2,4,3] (first half + reverse second half)
         pots = sorted(pots)
         if pots[0] == 0:
             pots.append(pots.pop(0))

@@ -1,0 +1,13 @@
+ManchesterCity (dummy country) 6 - 0 Besiktas (dummy country)
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_20 4
+ManchesterCity_18 20
+ManchesterCity_18 29
+ManchesterCity_17 45+1
+ManchesterCity_17 47
+ManchesterCity_18 73

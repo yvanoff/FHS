@@ -1,0 +1,12 @@
+Salzburg (dummy country) 1 - 2 ManchesterCity (dummy country)
+
+
+
+Goals:
+
+Salzburg:
+ManchesterCity_21 19 o.g.
+
+ManchesterCity:
+ManchesterCity_17 81
+ManchesterCity_19 90+2

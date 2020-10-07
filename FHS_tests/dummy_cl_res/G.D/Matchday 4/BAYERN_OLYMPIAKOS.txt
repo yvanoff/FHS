@@ -1,0 +1,10 @@
+Bayern (dummy country) 3 - 0 Olympiakos (dummy country)
+
+
+
+Goals:
+
+Bayern:
+Bayern_19 7
+Bayern_18 29
+Bayern_20 90

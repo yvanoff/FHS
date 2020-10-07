@@ -1,0 +1,11 @@
+Inter (dummy country) 1 - 1 Shakhtar (dummy country)
+
+
+
+Goals:
+
+Inter:
+Inter_16 45+5
+
+Shakhtar:
+Shakhtar_17 86

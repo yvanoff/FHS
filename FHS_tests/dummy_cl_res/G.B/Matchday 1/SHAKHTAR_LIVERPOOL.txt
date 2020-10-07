@@ -1,0 +1,12 @@
+Shakhtar (dummy country) 1 - 2 Liverpool (dummy country)
+
+
+
+Goals:
+
+Shakhtar:
+Shakhtar_11 65
+
+Liverpool:
+Liverpool_17 42
+Liverpool_18 69

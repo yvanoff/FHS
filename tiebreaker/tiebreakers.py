@@ -1,7 +1,7 @@
 """
 Created on Thu Sep 10 2020
 
-File defining the generic Tiebreaker class, as well as a Generic HardcodedTB class,
+File defining the generic Tiebreaker class
 and a method converting str arguments to appropriate tiebreakers
 
 Tiebreakers are used in a variety of sports to break ties between two teams. Ties can occur in two situations:
@@ -34,6 +34,8 @@ class Tiebreaker:
         ----------
         name : str
                     The Tiebreaker's name
+        round_applied : Round
+                    The Round in which the Tiebreaker applies (to have access to any relevant data)
 
         Methods
         -------
@@ -43,33 +45,12 @@ class Tiebreaker:
                     inside the list
     """
 
-    def __init__(self, name):
+    def __init__(self, name, cur_round):
         self.name = name
+        self.round_applied = cur_round
 
     def tie_break(self, teams):
         pass
 
-
-class HardcodedTiebreaker(Tiebreaker):
-    """
-        Defines a hardoded Tiebreaker. This class is empty because the tie-breaking criteria is hardcoded in the
-        competition managers
-
-        Attributes
-        ----------
-        name : str
-                    The Tiebreaker's name
-
-        Methods
-        -------
-        tie_break : list of Team -> list of Team
-                    Ranks the teams present in attribute from first to last according to the tie-breaking criteria. If
-                    some teams are still tied after applying the tie breaking criteria they'll be grouped in a list
-                    inside the list
-    """
-
-    def __init__(self, name):
-        self.name = name
-
-    def tie_break(self, teams):
-        pass
+    def _first(self, cur_tuple):
+        return cur_tuple[0]

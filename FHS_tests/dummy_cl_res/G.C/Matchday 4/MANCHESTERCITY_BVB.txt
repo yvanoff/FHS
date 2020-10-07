@@ -1,0 +1,9 @@
+ManchesterCity (dummy country) 2 - 0 BVB (dummy country)
+
+
+
+Goals:
+
+ManchesterCity:
+ManchesterCity_14 77
+ManchesterCity_14 90+2

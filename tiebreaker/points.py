@@ -24,8 +24,26 @@ class Points(Tiebreaker):
                     the list
     """
 
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, cur_round):
+        super().__init__(name, cur_round)
 
     def tie_break(self, teams):
-        pass
+        points_for_each = []
+        for t in teams:
+            points_for_each.append((t.points, t))
+        unready_table = sorted(points_for_each, key=self._first, reverse=True)
+        pts_only = [t[0] for t in unready_table]
+        final_table = []
+        p_i = 0
+        while p_i < len(pts_only):
+            p = pts_only[p_i]
+            occ = pts_only.count(p)
+            if occ == 1:
+                final_table.append(unready_table[p_i][1])
+            else:
+                grouping = []
+                for occ_i in range(occ):
+                    grouping.append(unready_table[p_i+occ_i][1])
+                final_table.append(grouping)
+            p_i += occ
+        return final_table
