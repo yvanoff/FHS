@@ -1,10 +1,8 @@
 # FHS
 Football History Simulator v2.0
 
+Welcome to the Football History Simulator 2.0 !
+The idea is very simple: this program simulates, from team files, a whole competition ! Want to simulate a fantasy historic of the UEFA Champions League ? It's possible ! Just create team files and generate away ! The program comes included with tools to generate/modify your own team files easily (team data is stored in a xml file).
+Likewise tools will be implemented to easily program competitions (competitions are executed using instructions in a json file, which currently has to be modified by hand).
 
-To @Kardyne (and anybody else who might read this):
-- currently only the team generator and the league competitions are usable
-- use the generator to generate some teams (Option 1 of the CLI interface)
-- then run a league (option 4 of the CLI interface)
-- an example of a league configuration file is included in test.json, use it to run a test league
-(you can modify it to try other configurations)
+Note that despite the name, the program is also designed to be modular. Want to simulate Ice Hockey instead of Football ? You will need to implement some specific classes for hockey (because team and player data differs between the two sports, not to mention that you'll need an engine able to generate hocky matches), but once you do that you can easily do it !
